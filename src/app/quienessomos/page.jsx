@@ -34,7 +34,7 @@ export default function QuienesSomos() {
   return (
     <section
       id="quienesSomos"
-      className="w-full py-20 px-6 bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] text-white text-center relative overflow-hidden animate-[pulseBg_8s_ease-in-out_infinite]"
+      className="w-full py-20 px-6 bg-black text-white text-center relative overflow-hidden animate-[pulseBg_8s_ease-in-out_infinite]"
     >
       <style>
         {`

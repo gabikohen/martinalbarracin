@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 
-// Helper de moneda ARS
+// Helper ARS
 const fmtARS = (n) =>
   new Intl.NumberFormat("es-AR", {
     style: "currency",
@@ -10,7 +10,7 @@ const fmtARS = (n) =>
     maximumFractionDigits: 0,
   }).format(isNaN(n) ? 0 : n);
 
-// CATEGORÍAS DIVERTIDAS (orden de progreso)
+// CATEGORÍAS DIVERTIDAS (mismo orden)
 const CATEGORIAS = [
   { icon: "😅", name: "Mano Temblorosa", desc: "Recién empezás, con ganas de más." },
   { icon: "🎲", name: "Fichero Novato", desc: "Ya entendés la movida y sumás fichas." },
@@ -24,18 +24,36 @@ const CATEGORIAS = [
   { icon: "🏆", name: "Leyenda del Tapete", desc: "Nivel máximo, premios VIP y respeto total." },
 ];
 
-// COMPONENTE PARA ÍTEMS DE FAQ (JSX sin TypeScript)
+// % de comisión por categoría (podés ajustar)
+const COMISION_POR_CATEGORIA = [6, 8, 10, 12, 13, 14, 15, 16, 18, 20];
+
+// Umbrales de PUNTOS -> categoría (puntos ~ pesos jugados + 10 por recomendado)
+// Ej: 0-4.999 → cat 0; 5.000-19.999 → cat 1; 20.000-49.999 → cat 2; 50.000+ → cat 3+ (vamos subiendo)
+const UMBRALES_PUNTOS = [
+  { max: 4999, idx: 0 },
+  { max: 19999, idx: 1 },
+  { max: 49999, idx: 2 },
+  // a partir de 50k puntos vamos escalando más arriba:
+];
+
+function categoriaPorPuntos(puntos) {
+  if (puntos <= UMBRALES_PUNTOS[0].max) return 0;
+  if (puntos <= UMBRALES_PUNTOS[1].max) return 1;
+  if (puntos <= UMBRALES_PUNTOS[2].max) return 2;
+
+  // Por cada 50k puntos extra, sube una categoría más hasta la última
+  const extras = Math.floor((puntos - 50000) / 50000) + 3; // 50k → cat 3; 100k → cat 4; etc.
+  return Math.min(extras, CATEGORIAS.length - 1);
+}
+
+// Item simple de FAQ
 function FaqItem({ question, answer }) {
   const [isOpen, setIsOpen] = useState(false);
-
   return (
     <div className="border-b-2 border-gray-700 pb-4">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex justify-between items-center text-left"
-      >
+      <button onClick={() => setIsOpen(!isOpen)} className="w-full flex justify-between items-center text-left">
         <span className="text-xl font-semibold text-gray-100">{question}</span>
-        <span className="text-2xl text-[#E5C07B]">{isOpen ? "−" : "+"}</span>
+        <span className="text-2xl text-[#dfb95a]">{isOpen ? "−" : "+"}</span>
       </button>
       {isOpen && (
         <div className="mt-4 text-gray-300">
@@ -47,39 +65,50 @@ function FaqItem({ question, answer }) {
 }
 
 export default function Home() {
-  // Estado del simulador
-  const [clientes, setClientes] = useState(5);
-  const [ticket, setTicket] = useState(10000); // ARS ticket promedio semanal por cliente (min 1000)
-  const [fee, setFee] = useState(12); // % comisión base referidor
-  const [sesiones, setSesiones] = useState(1); // sesiones del partner / semana (actividad propia)
-  const [cashPct, setCashPct] = useState(50); // % del pago en efectivo (resto en fichas)
+  // NUEVOS CAMPOS (según tu texto)
+  const [recomendados, setRecomendados] = useState(5);      // cantidad de referidos/recomendados
+  const [jugadoRefs, setJugadoRefs] = useState(3000000);    // ARS jugado por recomendados
+  const [jugadoPropio, setJugadoPropio] = useState(0);      // ARS jugado por vos
+  const [cashPct, setCashPct] = useState(50);               // % del pago en efectivo (resto en fichas)
+
+  // Selección manual/automática de categoría
+  const [manualCategoria, setManualCategoria] = useState(false);
+  const [catManualIdx, setCatManualIdx] = useState(0);
 
   // Validaciones simples
-  const ticketError = ticket < 1000 ? "El ticket mínimo es de $1.000 ARS." : "";
-  const clientesError = clientes < 0 ? "No puede ser negativo." : "";
-  const feeError = fee < 0 || fee > 50 ? "Entre 0% y 50%." : "";
-  const sesionesError = sesiones < 0 ? "No puede ser negativo." : "";
+  const errores = {
+    recomendados: recomendados < 0 ? "No puede ser negativo." : "",
+    jugadoRefs: jugadoRefs < 0 ? "No puede ser negativo." : "",
+    jugadoPropio: jugadoPropio < 0 ? "No puede ser negativo." : "",
+  };
 
-  // Bonus motivador por sesiones (sin imponer): +5% (3+) y +10% (5+)
-  const bonus = sesiones >= 5 ? 10 : sesiones >= 3 ? 5 : 0; // % extra por actividad propia
-  const comisionEfectiva = Math.max(0, Math.min(50, fee)) + bonus;
+  // SISTEMA DE PUNTOS
+  // 10 puntos por recomendado + 1 punto por cada peso jugado (referidos + propio)
+  const puntos = useMemo(() => {
+    const base = (recomendados * 10) + (Math.max(0, jugadoRefs) + Math.max(0, jugadoPropio));
+    return Math.max(0, Math.floor(base));
+  }, [recomendados, jugadoRefs, jugadoPropio]);
 
-  // Mapeo de sesiones -> categoría (0 o 1 → cat 0, 2 → cat 1, ... 10+ → cat 9)
-  const categoriaIndex = Math.max(0, Math.min(9, sesiones <= 1 ? 0 : sesiones - 1));
-  const categoria = CATEGORIAS[categoriaIndex];
+  // CATEGORÍA (automática por puntos o manual)
+  const categoriaIdx = manualCategoria ? catManualIdx : categoriaPorPuntos(puntos);
+  const categoria = CATEGORIAS[categoriaIdx];
 
-  // Ingreso mensual estimado (4 semanas)
-  const ingresoMensual = useMemo(() => {
-    if (ticket < 1000 || clientes < 0) return 0;
-    return Math.round(clientes * ticket * (comisionEfectiva / 100) * 4);
-  }, [clientes, ticket, comisionEfectiva]);
+  // % comisión según categoría
+  const comisionPct = COMISION_POR_CATEGORIA[categoriaIdx] ?? 0;
 
+  // Ingreso mensual estimado:
+  // Tomamos como base la actividad (jugado total de tus recomendados + lo tuyo)
+  // y aplicamos % de comisión por categoría.
+  const baseComisionable = Math.max(0, jugadoRefs) + Math.max(0, jugadoPropio);
+  const ingresoMensual = Math.round(baseComisionable * (comisionPct / 100));
+
+  // Split efectivo / fichas
   const efectivo = Math.round((ingresoMensual * cashPct) / 100);
   const fichas = Math.max(0, ingresoMensual - efectivo);
 
   return (
     <main className="bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] text-white">
-      {/* SECCIÓN HÉROE */}
+      {/* HÉROE */}
       <section
         id="hero"
         className="py-24 px-4 bg-cover bg-center"
@@ -93,26 +122,26 @@ export default function Home() {
             Hacé Negocio con MarTeam
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
-            Convertite en <span className="text-[#E5C07B] font-bold">jugador-inversionista</span>: jugá todas
-            las semanas, traé clientes y cobrá comisiones en{" "}
-            <span className="text-[#E5C07B]">dinero + fichas</span>.
+            Convertite en <span className="text-[#dfb95a] font-bold">jugador-inversionista</span>: jugá todas
+            las semanas, recomendá clientes y cobrá comisiones en{" "}
+            <span className="text-[#dfb95a]">dinero + fichas</span>.
           </p>
           <a
             href="#simulador"
-            className="bg-[#E5C07B] text-black py-4 px-10 rounded-lg font-bold hover:bg-yellow-300 transition-colors text-lg shadow-lg shadow-[#E5C07B]/30"
+            className="bg-[#dfb95a] text-black py-4 px-10 rounded-lg font-bold hover:bg-yellow-300 transition-colors text-lg shadow-lg shadow-[#dfb95a]/30"
           >
             Calcular cuánto gano
           </a>
         </div>
       </section>
 
-      {/* SECCIÓN VALOR */}
+      {/* VALOR */}
       <section id="negocio" className="py-20 px-4">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl sm:text-5xl font-black text-[#E5C07B] mb-4">Hacé negocio con MarTeam</h2>
+          <h2 className="text-4xl sm:text-5xl font-black text-[#dfb95a] mb-4">Hacé negocio con MarTeam</h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-12">
-            Jugás, referís y crecés. Mientras más participás, más subís de nivel y mejores premios desbloqueás
-            en <span className="text-[#E5C07B] font-semibold">fichas + dinero</span>.
+            Recomendás, jugás y crecés. Mientras más participás, más subís de nivel y mejores premios desbloqueás
+            en <span className="text-[#dfb95a] font-semibold">fichas + dinero</span>.
           </p>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -126,122 +155,122 @@ export default function Home() {
             </div>
             <div className="bg-[#1f1f1f] p-8 rounded-xl border border-gray-700 hover:-translate-y-2 transition-all">
               <h3 className="text-2xl font-bold mb-2">Todo Claro</h3>
-              <p className="text-gray-400">Condiciones transparentes y trazabilidad de referidos.</p>
+              <p className="text-gray-400">Condiciones transparentes y trazabilidad de recomendados.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECCIÓN CATEGORÍAS (por ticket semanal) */}
-      <section id="categorias" className="py-16 px-4 bg-[#111]">
-        <div className="container mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-black text-center text-[#E5C07B] mb-10">
-            Categorías por ticket semanal (ARS)
-          </h2>
-          <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            <div className="bg-[#1a1a1a] border border-gray-700 rounded-2xl p-6 text-center">
-              <h3 className="text-xl font-bold">Micro</h3>
-              <p className="text-gray-400 mt-2">
-                {fmtARS(1000)} – {fmtARS(4999)}
-              </p>
-              <p className="text-sm text-gray-500 mt-2">Entrada mínima</p>
-            </div>
-            <div className="bg-[#1a1a1a] border border-gray-700 rounded-2xl p-6 text-center">
-              <h3 className="text-xl font-bold">Starter</h3>
-              <p className="text-gray-400 mt-2">
-                {fmtARS(5000)} – {fmtARS(19999)}
-              </p>
-              <p className="text-sm text-gray-500 mt-2">Volumen inicial</p>
-            </div>
-            <div className="bg-[#1a1a1a] border border-gray-700 rounded-2xl p-6 text-center">
-              <h3 className="text-xl font-bold">Pro</h3>
-              <p className="text-gray-400 mt-2">
-                {fmtARS(20000)} – {fmtARS(49999)}
-              </p>
-              <p className="text-sm text-gray-500 mt-2">Buen rendimiento</p>
-            </div>
-            <div className="bg-[#1a1a1a] border border-gray-700 rounded-2xl p-6 text-center">
-              <h3 className="text-xl font-bold">Elite</h3>
-              <p className="text-gray-400 mt-2">{fmtARS(50000)}+</p>
-              <p className="text-sm text-gray-500 mt-2">Alto volumen</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SECCIÓN SIMULADOR */}
+      {/* SIMULADOR (según tu texto) */}
       <section id="simulador" className="py-20 px-4">
         <div className="container mx-auto text-center max-w-4xl">
-          <h2 className="text-4xl sm:text-5xl font-black text-[#E5C07B] mb-4">Simulá tus ganancias</h2>
+          <h2 className="text-4xl sm:text-5xl font-black text-[#dfb95a] mb-4">Sección: calculá tu ganancia</h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10">
-            Ingresá los datos. El ticket semanal por cliente debe ser de al menos <b>{fmtARS(1000)}</b>.
+            Completá los datos. Si preferís, podés elegir tu categoría manualmente o que se calcule automáticamente por puntos.
           </p>
 
-          <form
-            className="text-left bg-[#151515] border border-gray-700 rounded-2xl p-6"
-            onSubmit={(e) => e.preventDefault()}
-          >
+          <form className="text-left bg-[#151515] border border-gray-700 rounded-2xl p-6" onSubmit={(e) => e.preventDefault()}>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* 1) Recomendados */}
               <div>
-                <label className="text-sm text-gray-400">Clientes activos</label>
+                <label className="text-sm text-gray-400">Recomendados</label>
                 <input
                   type="number"
                   min={0}
                   step={1}
-                  value={clientes}
-                  onChange={(e) => setClientes(Number(e.target.value))}
+                  value={recomendados}
+                  onChange={(e) => setRecomendados(Number(e.target.value))}
                   className="w-full mt-1 bg-transparent border border-gray-700 rounded-lg p-3 outline-none"
-                  aria-invalid={!!clientesError}
+                  aria-invalid={!!errores.recomendados}
                 />
-                {clientesError && <p className="text-xs text-red-400 mt-1">{clientesError}</p>}
+                {errores.recomendados && <p className="text-xs text-red-400 mt-1">{errores.recomendados}</p>}
+                <p className="text-xs text-gray-500 mt-1">10 puntos por cada recomendado.</p>
               </div>
 
+              {/* 2) $ jugado por recomendados */}
               <div>
-                <label className="text-sm text-gray-400">Ticket semanal por cliente (ARS)</label>
-                <input
-                  type="number"
-                  min={1000}
-                  step={100}
-                  value={ticket}
-                  onChange={(e) => setTicket(Number(e.target.value))}
-                  className="w-full mt-1 bg-transparent border border-gray-700 rounded-lg p-3 outline-none"
-                  aria-invalid={!!ticketError}
-                />
-                {ticketError && <p className="text-xs text-red-400 mt-1">{ticketError}</p>}
-              </div>
-
-              <div>
-                <label className="text-sm text-gray-400">% Comisión base</label>
+                <label className="text-sm text-gray-400">AR$ jugado por recomendados</label>
                 <input
                   type="number"
                   min={0}
-                  max={50}
-                  step={1}
-                  value={fee}
-                  onChange={(e) => setFee(Number(e.target.value))}
+                  step={1000}
+                  value={jugadoRefs}
+                  onChange={(e) => setJugadoRefs(Number(e.target.value))}
                   className="w-full mt-1 bg-transparent border border-gray-700 rounded-lg p-3 outline-none"
-                  aria-invalid={!!feeError}
+                  aria-invalid={!!errores.jugadoRefs}
                 />
-                {feeError && <p className="text-xs text-red-400 mt-1">{feeError}</p>}
+                {errores.jugadoRefs && <p className="text-xs text-red-400 mt-1">{errores.jugadoRefs}</p>}
+                <p className="text-xs text-gray-500 mt-1">1 punto por cada peso jugado.</p>
               </div>
 
+              {/* 3) $ jugado propio */}
               <div>
-                <label className="text-sm text-gray-400">Sesiones propias/semana</label>
+                <label className="text-sm text-gray-400">AR$ jugado por vos</label>
                 <input
                   type="number"
                   min={0}
-                  step={1}
-                  value={sesiones}
-                  onChange={(e) => setSesiones(Number(e.target.value))}
+                  step={1000}
+                  value={jugadoPropio}
+                  onChange={(e) => setJugadoPropio(Number(e.target.value))}
                   className="w-full mt-1 bg-transparent border border-gray-700 rounded-lg p-3 outline-none"
-                  aria-invalid={!!sesionesError}
+                  aria-invalid={!!errores.jugadoPropio}
                 />
+                {errores.jugadoPropio && <p className="text-xs text-red-400 mt-1">{errores.jugadoPropio}</p>}
+                <p className="text-xs text-gray-500 mt-1">1 punto por cada peso jugado.</p>
+              </div>
+
+              {/* Toggle manual/auto */}
+              <div className="sm:col-span-2 lg:col-span-3 flex items-center gap-3 mt-2">
+                <input
+                  id="manualCategoria"
+                  type="checkbox"
+                  checked={manualCategoria}
+                  onChange={(e) => setManualCategoria(e.target.checked)}
+                  className="accent-[#dfb95a] w-5 h-5"
+                />
+                <label htmlFor="manualCategoria" className="text-sm text-gray-300">
+                  Elegir categoría manualmente (si no, se calcula automática por puntos)
+                </label>
+              </div>
+
+              {/* Selector manual de categoría */}
+              {manualCategoria && (
+                <div className="sm:col-span-2 lg:col-span-3">
+                  <label className="text-sm text-gray-400">Tu categoría (manual)</label>
+                  <select
+                    value={catManualIdx}
+                    onChange={(e) => setCatManualIdx(Number(e.target.value))}
+                    className="w-full mt-1 bg-transparent border border-gray-700 rounded-lg p-3 outline-none"
+                  >
+                    {CATEGORIAS.map((c, i) => (
+                      <option key={c.name} value={i} className="bg-[#0F0F0F]">
+                        {c.icon} {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* INFO de categoría y comisión */}
+              <div className="bg-[#101010] border border-gray-700 rounded-xl p-4">
+                <p className="text-sm text-gray-400">Tu categoría actual</p>
+                <div className="text-xl font-bold mt-1">
+                  {categoria.icon} {categoria.name}
+                </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Tip: a partir de 3 sesiones sumás +5% y desde 5 sesiones +10%.
+                  {manualCategoria ? "Seleccionada manualmente." : "Calculada automáticamente por puntos."}
                 </p>
-                {sesionesError && <p className="text-xs text-red-400 mt-1">{sesionesError}</p>}
               </div>
 
+              <div className="bg-[#101010] border border-gray-700 rounded-xl p-4">
+                <p className="text-sm text-gray-400">Tu % de comisión</p>
+                <div className="text-2xl font-black text-[#dfb95a]">{comisionPct}%</div>
+                <p className="text-xs text-gray-500 mt-1">
+                  A partir de <span className="font-semibold">Aventurero del Tapete</span> empezás a desbloquear premios especiales.
+                </p>
+              </div>
+
+              {/* Split cash/fichas */}
               <div>
                 <label className="text-sm text-gray-400">% en efectivo (cash)</label>
                 <input
@@ -252,116 +281,110 @@ export default function Home() {
                   onChange={(e) => setCashPct(Number(e.target.value))}
                   className="w-full mt-3"
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Cash: {cashPct}% • Fichas: {100 - cashPct}%
-                </p>
-              </div>
-
-              <div className="bg-[#101010] border border-gray-700 rounded-xl p-4">
-                <p className="text-sm text-gray-400">Tu categoría estimada</p>
-                <div className="text-xl font-bold mt-1">
-                  {categoria.icon} {categoria.name}{" "}
-                  {bonus ? <span className="text-[#E5C07B]">(+{bonus}% bonus)</span> : null}
-                </div>
-                <p className="text-xs text-gray-500 mt-1">Comisión efectiva: {comisionEfectiva}%</p>
+                <p className="text-xs text-gray-500 mt-1">Cash: {cashPct}% • Fichas: {100 - cashPct}%</p>
               </div>
             </div>
 
+            {/* RESULTADOS: Puntos y Dinero a cobrar */}
             <div className="mt-8 grid sm:grid-cols-3 gap-4 text-center">
               <div className="bg-[#101010] border border-gray-700 rounded-xl p-6">
-                <p className="text-sm text-gray-400">Ingreso mensual estimado</p>
-                <div className="text-3xl font-black text-[#E5C07B]">{fmtARS(ingresoMensual)}</div>
+                <p className="text-sm text-gray-400">Tus puntos</p>
+                <div className="text-3xl font-black text-[#dfb95a]">{puntos.toLocaleString("es-AR")}</div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Siguiente salto cada 50.000 pts (~AR$50.000), sube tu categoría.
+                </p>
               </div>
               <div className="bg-[#101010] border border-gray-700 rounded-xl p-6">
-                <p className="text-sm text-gray-400">Efectivo (cash)</p>
-                <div className="text-2xl font-bold">{fmtARS(efectivo)}</div>
+                <p className="text-sm text-gray-400">Dinero a cobrar (mensual)</p>
+                <div className="text-2xl font-bold">{fmtARS(ingresoMensual)}</div>
               </div>
               <div className="bg-[#101010] border border-gray-700 rounded-xl p-6">
-                <p className="text-sm text-gray-400">Fichas</p>
-                <div className="text-2xl font-bold">{fmtARS(fichas)}</div>
+                <p className="text-sm text-gray-400">Detalle</p>
+                <div className="text-sm">
+                  <div>Efectivo: <span className="font-semibold">{fmtARS(efectivo)}</span></div>
+                  <div>Fichas: <span className="font-semibold">{fmtARS(fichas)}</span></div>
+                </div>
               </div>
             </div>
           </form>
         </div>
       </section>
 
-      {/* SECCIÓN NIVELES DIVERTIDOS */}
+      {/* RANGOS (para que se vea tu escalera de premios) */}
       <section id="rangos" className="py-20 px-4 bg-[#111]">
         <div className="container mx-auto">
-          <h2 className="text-4xl sm:text-5xl font-black text-center text-[#E5C07B] mb-12">
+          <h2 className="text-4xl sm:text-5xl font-black text-center text-[#dfb95a] mb-12">
             Subí de Nivel Jugando
           </h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-6xl mx-auto">
-            {CATEGORIAS.map((c) => (
+            {CATEGORIAS.map((c, i) => (
               <div
                 key={c.name}
-                className="bg-[#1a1a1a] border border-gray-700 rounded-2xl p-6 text-center hover:-translate-y-1 transition-all"
+                className={`bg-[#1a1a1a] border rounded-2xl p-6 text-center hover:-translate-y-1 transition-all ${
+                  i === categoriaIdx ? "border-[#dfb95a]" : "border-gray-700"
+                }`}
               >
                 <div className="text-4xl">{c.icon}</div>
                 <h3 className="text-2xl font-bold mt-2">{c.name}</h3>
                 <p className="text-gray-400 mt-2 text-sm">{c.desc}</p>
+                <p className="text-xs text-gray-500 mt-3">
+                  Comisión estimada: <span className="font-semibold">{COMISION_POR_CATEGORIA[i]}%</span>
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* SECCIÓN ¿CÓMO FUNCIONA? */}
+      {/* ¿CÓMO FUNCIONA? */}
       <section id="guia" className="py-20 px-4">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl sm:text-5xl font-black text-[#E5C07B] mb-4">¿Cómo Funciona?</h2>
+          <h2 className="text-4xl sm:text-5xl font-black text-[#dfb95a] mb-4">¿Cómo funciona?</h2>
           <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-12">
-            Tres pasos: registrate, jugá cada semana y compartí tu enlace. Mientras más jugás, más ganás.
+            Tres pasos: recomendá, jugá cada semana y mirá cómo suben tus puntos. Podés elegir la categoría
+            manualmente o dejar que el sistema la calcule según tu actividad.
           </p>
           <div className="grid md:grid-cols-3 gap-10">
             <div className="bg-[#1f1f1f] p-8 rounded-xl border border-gray-700 hover:-translate-y-2 transition-all">
-              <div className="text-5xl font-black text-[#E5C07B] mb-4">1</div>
-              <h3 className="text-2xl font-bold mb-2">Registrate</h3>
-              <p className="text-gray-400">Te damos tu enlace único y tu panel.</p>
+              <div className="text-5xl font-black text-[#dfb95a] mb-4">1</div>
+              <h3 className="text-2xl font-bold mb-2">Recomendá</h3>
+              <p className="text-gray-400">Sumás 10 puntos por cada recomendado activo.</p>
             </div>
             <div className="bg-[#1f1f1f] p-8 rounded-xl border border-gray-700 hover:-translate-y-2 transition-all">
-              <div className="text-5xl font-black text-[#E5C07B] mb-4">2</div>
-              <h3 className="text-2xl font-bold mb-2">Jugá & Traé Clientes</h3>
-              <p className="text-gray-400">Participá cada semana y activá tus referidos.</p>
+              <div className="text-5xl font-black text-[#dfb95a] mb-4">2</div>
+              <h3 className="text-2xl font-bold mb-2">Jugá</h3>
+              <p className="text-gray-400">Cada peso jugado (tuyo o de tus recomendados) suma 1 punto.</p>
             </div>
             <div className="bg-[#1f1f1f] p-8 rounded-xl border border-gray-700 hover:-translate-y-2 transition-all">
-              <div className="text-5xl font-black text-[#E5C07B] mb-4">3</div>
+              <div className="text-5xl font-black text-[#dfb95a] mb-4">3</div>
               <h3 className="text-2xl font-bold mb-2">Cobrá</h3>
               <p className="text-gray-400">
-                Recibí comisiones en <span className="text-[#E5C07B]">dinero + fichas</span>.
+                Tu comisión depende de tu categoría. A partir de “Aventurero del Tapete” desbloqueás premios.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECCIÓN FAQ */}
+      {/* FAQ */}
       <section id="faq" className="py-20 px-4">
         <div className="container mx-auto max-w-3xl">
-          <h2 className="text-4xl sm:text-5xl font-black text-center text-[#E5C07B] mb-12">
+          <h2 className="text-4xl sm:text-5xl font-black text-center text-[#dfb95a] mb-12">
             Preguntas Frecuentes
           </h2>
           <div className="space-y-4">
             <FaqItem
-              question="¿Conviene jugar todas las semanas?"
-              answer="Sí, porque desbloqueás categorías más altas y sumás bonus de comisión (+5% desde 3 sesiones, +10% desde 5)."
+              question="¿Cómo se calculan los puntos?"
+              answer="10 puntos por recomendado + 1 punto por cada peso jugado por tus recomendados y por vos."
             />
             <FaqItem
-              question="¿Cómo gano plata como partner?"
-              answer="Referís jugadores con tu enlace único y cobrás un % de su actividad. Además recibís premios en fichas + dinero."
+              question="¿Cómo se define mi categoría?"
+              answer="Podés elegirla manualmente o dejar que el sistema la calcule por puntos. Cada 50.000 puntos subís un nivel."
             />
             <FaqItem
-              question="¿Cómo se pagan los premios?"
-              answer="Podés definir el % en efectivo y el % en fichas en tu panel. El cash se retira, las fichas potencian tu juego."
-            />
-            <FaqItem
-              question="¿Cuándo cobro mis comisiones?"
-              answer="Según plan, semanal o mensual, con reporte detallado de tus referidos y tu actividad propia."
-            />
-            <FaqItem
-              question="¿Hay mínimo de ticket?"
-              answer="Sí, el ticket semanal por cliente parte desde $1.000 ARS para ingresar al sistema de beneficios."
+              question="¿Cuál es mi comisión?"
+              answer="Depende de tu categoría. En la sección del simulador ves tu % y cuánto cobrás en dinero + fichas."
             />
           </div>
         </div>

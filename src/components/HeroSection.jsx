@@ -14,7 +14,7 @@ const HeroSection = () => {
   const animationFrameRef = useRef();
   const mousePosition = useRef({ x: 0, y: 0 });
 
-  const words = ["Lo", "que", "importa", "es","la","confianza","en","el","cajero", "no", "la", "plataforma"];
+  const words = ["Lo", "que", "importa", "es","la","confianza","en","el","cajero,", "no", "la", "plataforma"];
 
   useEffect(() => {
     setIsClient(true);
@@ -172,7 +172,7 @@ const HeroSection = () => {
                 index <= currentWordIndex ? 'opacity-100' : 'opacity-0 -translate-y-4'
               }`}
               style={{
-                color: '#E5C07B',
+                color: '#dfb95a',
                 textShadow: '0 0 10px rgba(229,192,123,0.5), 0 0 25px rgba(229,192,123,0.3)',
                 transitionDelay: `${index * 0.15}s`
               }}

@@ -18,7 +18,7 @@ const testimonials = [
 ];
 
 const TestimonialCard = ({ name, text }) => (
-  <div className="bg-transparent bg-[radial-gradient(ellipse_at_top_left,rgba(229,192,123,0.08),transparent)] border border-white/20 rounded-2xl px-8 py-12 shadow-[0_0_15px_rgba(255,255,255,0.1)] h-full w-full flex flex-col justify-between">
+  <div className="bg-black border border-white/20 rounded-2xl px-8 py-12  h-full w-full flex flex-col justify-between">
     <div>
       <div className="text-[#dfb95a] mb-4 text-3xl">{"★".repeat(7)}</div>
       <p className="text-base leading-relaxed tracking-wide mb-6">“{text}”</p>

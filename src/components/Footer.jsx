@@ -10,11 +10,11 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-[#E5C07B]/5 to-transparent border-t-2 border-[#E5C07B]/20 text-white pt-20 pb-10 px-6 sm:px-12 lg:px-32 transition-all duration-500">
+    <footer className="bg-black  text-white pt-20 pb-10 px-6 sm:px-12 lg:px-32 transition-all duration-500">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-16 border-b border-white/20 pb-10 text-center">
         {/* Logo y descripción */}
         <div className="lg:col-span-2">
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-[#E5C07B] drop-shadow-[0_0_12px_#facc15]">
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-[#dfb95a] drop-shadow-[0_0_12px_#facc15]">
             MARTEAM
           </h2>
           <p className="mt-4 text-base text-white/90">
@@ -59,7 +59,7 @@ export default function Footer() {
             Soporte
           </h3>
           <ul className="space-y-3 text-base text-white/90">
-            <li className="hover:text-[#E5C07B] transition">
+            <li className="hover:text-[#dfb95a] transition">
               <Link href="/preguntas">Preguntas Frecuentes</Link>
             </li>
           </ul>
@@ -83,10 +83,10 @@ export default function Footer() {
             Compañía
           </h3>
           <ul className="space-y-3 text-base text-white/90">
-            <li className="hover:text-[#E5C07B] transition">
+            <li className="hover:text-[#dfb95a] transition">
               <Link href="/afiliate">Afíliate</Link>
             </li>
-            <li className="hover:text-[#E5C07B] transition">
+            <li className="hover:text-[#dfb95a] transition">
               <Link href="/terminos">Términos y Condiciones</Link>
             </li>
           </ul>
@@ -119,10 +119,10 @@ export default function Footer() {
       </div>
 
       {/* Copyright centrado + badge 18+ al lado */}
-     <div className="mt-10 flex items-center justify-center gap-4 text-base text-white/80 text-center">
+     <div className="mt-6 flex items-center justify-center gap-4 text-base text-white/80 text-center">
   <span
     aria-label="Contenido para mayores de 18"
-    className="inline-flex w-12 h-12 md:w-14 md:h-14 rounded-full border border-[#E5C07B] text-[#E5C07B] items-center justify-center font-semibold text-sm md:text-base tracking-wide"
+    className="inline-flex w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#dfb95a] text-[#dfb95a] items-center justify-center font-semibold text-sm md:text-base tracking-wide"
   >
     18+
   </span>

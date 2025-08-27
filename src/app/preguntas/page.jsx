@@ -35,7 +35,7 @@ export default function FAQSection() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
             Preguntas Frecuentes
           </h2>
-          <p className="text-[#E5C07B] text-lg sm:text-xl max-w-2xl mx-auto">
+          <p className="text-[#dfb95a] text-lg sm:text-xl max-w-2xl mx-auto">
             Encuentra respuestas a las preguntas más comunes sobre nuestra plataforma
           </p>
         </div>
@@ -55,9 +55,9 @@ export default function FAQSection() {
                   {item.question}
                 </h3>
                 {openItems[index] ? (
-                  <ChevronUp className="w-5 h-5 text-[#E5C07B]" />
+                  <ChevronUp className="w-5 h-5 text-[#dfb95a]" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-[#E5C07B]" />
+                  <ChevronDown className="w-5 h-5 text-[#dfb95a]" />
                 )}
               </button>
 
@@ -84,10 +84,10 @@ export default function FAQSection() {
             <h3 className="text-white font-bold text-xl sm:text-2xl mb-3">
               ¿No encontraste lo que buscabas?
             </h3>
-            <p className="text-[#E5C07B] mb-6">
+            <p className="text-[#dfb95a] mb-6">
               Nuestro equipo de soporte está disponible 24/7 para ayudarte
             </p>
-            <button className="relative bg-transparent text-white py-4 px-8 rounded-lg border-2 border-[#E5C07B] transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 before:content-[''] before:absolute before:inset-0 before:rounded-lg before:shadow-[0_0_15px_#6b21a8,0_0_25px_#1e3a8a,0_0_35px_#312e81] before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-300 before:z-[-1] hover:text-[#FFF7D1] hover:shadow-[0_0_15px_rgba(255,247,209,0.8),0_0_25px_rgba(255,247,209,0.6)] hover:border-[#E5C07B]">
+            <button className="relative bg-transparent text-white py-4 px-8 rounded-lg border-2 border-[#dfb95a] transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 before:content-[''] before:absolute before:inset-0 before:rounded-lg before:shadow-[0_0_15px_#6b21a8,0_0_25px_#1e3a8a,0_0_35px_#312e81] before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-300 before:z-[-1] hover:text-[#FFF7D1] hover:shadow-[0_0_15px_rgba(255,247,209,0.8),0_0_25px_rgba(255,247,209,0.6)] hover:border-[#dfb95a]">
               <a
   href="https://wa.me/5491123456789"
   target="_blank"

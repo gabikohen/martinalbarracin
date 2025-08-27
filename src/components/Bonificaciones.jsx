@@ -1,191 +1,130 @@
-// components/Bonificaciones.jsx
 "use client";
-import React, { useMemo, useState } from "react";
+
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-const BRAND = "#338c3b"; // verde principal (barras/números)
-// Nota: "Bonificaciones" (plural) no lleva tilde; la forma singular "bonificación" sí.
-
-// Datos en MILLONES (enero → agosto)
+// Datos ordenados de enero a agosto
 const bonificacionesData = [
-  { mes: "Enero",   monto: 1.2 },
-  { mes: "Febrero", monto: 1.8 },
-  { mes: "Marzo",   monto: 0.9 },
-  { mes: "Abril",   monto: 2.3 },
-  { mes: "Mayo",    monto: 3.1 },
-  { mes: "Junio",   monto: 1.6 },
-  { mes: "Julio",   monto: 2.7 },
-  { mes: "Agosto",  monto: 3.9 },
+  { mes: "Enero", monto: "$1.5 Millones" },
+  { mes: "Febrero", monto: "$1.7 Millones" },
+  { mes: "Marzo", monto: "$2.0 Millones" },
+  { mes: "Abril", monto: "$1.8 Millones" },
+  { mes: "Mayo", monto: "$2.3 Millones" },
+  { mes: "Junio", monto: "$1.9 Millones" },
+  { mes: "Julio", monto: "$2.1 Millones" },
+  { mes: "Agosto", monto: "$2.5 Millones" },
 ];
 
-// Utils
-const formatM = (n) =>
-  `${n.toLocaleString("es-AR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} M`;
-
-const container = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.06 } },
-};
-
-const item = {
-  hidden: { y: 8, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 140, damping: 16 } },
-};
-
-// Sparkline minimal (inline SVG, sin librerías)
-const Sparkline = ({ data, className = "" }) => {
-  const width = 280;
-  const height = 48;
-  const pad = 6;
-
-  const points = useMemo(() => {
-    const max = Math.max(...data);
-    const min = Math.min(...data);
-    const span = Math.max(1e-6, max - min);
-    return data.map((v, i) => {
-      const x = pad + (i * (width - pad * 2)) / (data.length - 1);
-      const y = pad + (height - pad * 2) * (1 - (v - min) / span);
-      return `${x},${y}`;
-    });
-  }, [data]);
-
-  const last = useMemo(() => {
-    const max = Math.max(...data);
-    const min = Math.min(...data);
-    const span = Math.max(1e-6, max - min);
-    const i = data.length - 1;
-    const x = pad + (i * (width - pad * 2)) / (data.length - 1);
-    const y = pad + (height - pad * 2) * (1 - (data[i] - min) / span);
-    return { x, y };
-  }, [data]);
-
-  return (
-    <svg viewBox={`0 0 ${width} ${height}`} className={className} aria-label="Tendencia mensual" role="img">
-      <polyline points={points.join(" ")} fill="none" stroke={BRAND} strokeWidth="2" opacity="0.9" />
-      <circle cx={last.x} cy={last.y} r="3" fill={BRAND} />
-    </svg>
-  );
-};
+// Calcular monto total numérico
+const montoTotal = bonificacionesData.reduce((total, item) => {
+  const montoNumerico = parseFloat(item.monto.replace(/[^0-9.]/g, ""));
+  return total + montoNumerico;
+}, 0).toFixed(1);
 
 const Bonificaciones = () => {
-  const [mostrarVariacion, setMostrarVariacion] = useState(true);
+  const [count, setCount] = useState(0);
 
-  const totalM = useMemo(() => bonificacionesData.reduce((a, b) => a + b.monto, 0), []);
-  const promedioM = useMemo(() => totalM / bonificacionesData.length, [totalM]);
-  const mejorMes = useMemo(
-    () => bonificacionesData.reduce((max, b) => (b.monto > max.monto ? b : max), bonificacionesData[0]),
-    []
-  );
-  const maxMonto = mejorMes.monto;
+  // Animación del contador para el total
+  useEffect(() => {
+    let start = 0;
+    const end = parseFloat(montoTotal);
+    if (start === end) return;
 
-  // Variaciones vs. mes anterior
-  const variaciones = useMemo(() => {
-    return bonificacionesData.map((b, i) => {
-      if (i === 0) return null;
-      const prev = bonificacionesData[i - 1].monto;
-      if (!prev) return null;
-      const diff = b.monto - prev;
-      const pct = (diff / prev) * 100;
-      return { diff, pct };
-    });
+    const step = () => {
+      start += 0.1;
+      if (start >= end) {
+        setCount(end);
+      } else {
+        setCount(parseFloat(start.toFixed(1)));
+        requestAnimationFrame(step);
+      }
+    };
+
+    requestAnimationFrame(step);
   }, []);
 
   return (
-    <section className="bg-black py-12 sm:py-16">
-      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6">
-        {/* Header: título + sparkline al costado (sm+) */}
-        <div className="mb-6 sm:mb-8 sm:flex sm:items-end sm:justify-between">
-          <div>
-            <h2 className="text-white text-2xl sm:text-3xl font-semibold tracking-tight text-center">
-              Bonificaciones
-            </h2>
-            <p className="text-gray-400 text-sm sm:text-base mt-2">
-              Enero — Agosto · montos en millones de pesos
-            </p>
+    <section id="bonificaciones" className="py-16 bg-black sm:py-20">
+      <div className="max-w-6xl px-4 sm:px-6 mx-auto lg:px-8">
+        {/* Título */}
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="text-4xl font-bold text-center sm:text-5xl mb-12 tracking-tight"
+          style={{ color: "#dfb95a" }}
+        >
+          Bonificaciones
+        </motion.h2>
 
-            {/* Toggle variación */}
-            <button
-              onClick={() => setMostrarVariacion((v) => !v)}
-              className="mt-3 rounded-full border border-white/10 px-3 py-1.5 text-sm text-gray-300 hover:bg-white/5 transition-colors"
-              aria-pressed={mostrarVariacion}
+        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-10">
+          {/* Columna Izquierda: Bonificaciones Mensuales */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { staggerChildren: 0.1 },
+              },
+            }}
+            className="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4"
+          >
+            {bonificacionesData.map((bono) => (
+              <motion.div
+                key={bono.mes}
+                variants={{
+                  hidden: { opacity: 0, y: 20, scale: 0.95 },
+                  visible: { opacity: 1, y: 0, scale: 1 },
+                }}
+                whileHover={{ scale: 1.05, boxShadow: "0px 6px 18px rgba(223, 185, 90, 0.25)" }}
+                transition={{ duration: 0.3 }}
+                className="bg-transparent border border-neutral-800 rounded-xl p-5 text-center"
+              >
+                <p className="text-base font-medium text-gray-400">
+                  {bono.mes} 2025
+                </p>
+                <p
+                  className="text-xl font-bold mt-2"
+                  style={{ color: "#dfb95a" }}
+                >
+                  {bono.monto}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Columna Derecha: Bonificaciones Totales */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="w-full lg:w-1/3 flex flex-col items-center lg:items-start mt-8 lg:mt-0 lg:pl-6"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              className="bg-transparent  border border-neutral-800 backdrop-blur-sm p-8 rounded-xl shadow text-center lg:text-left"
             >
-              {mostrarVariacion ? "Ocultar variación %" : "Mostrar variación %"}
-            </button>
-          </div>
-
-          {/* Sparkline al costado (en sm+). En mobile queda abajo por el flujo del DOM */}
-          <Sparkline data={bonificacionesData.map((d) => d.monto)} className="hidden sm:block w-56 md:w-64 h-12 mt-4 sm:mt-0" />
+              <h3 className="text-xl font-semibold text-gray-300">
+                Bonificaciones Totales
+              </h3>
+              <motion.p
+                key={count}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="text-4xl font-extrabold mt-3 tracking-tight"
+                style={{ color: "#dfb95a" }}
+              >
+                {count.toFixed(1)} Millones
+              </motion.p>
+            </motion.div>
+          </motion.div>
         </div>
-
-        {/* KPIs */}
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
-        >
-          <motion.div variants={item} className="rounded-xl border border-white/10 p-4">
-            <p className="text-xs uppercase tracking-wide text-gray-400">Total</p>
-            <p className="mt-1 text-2xl font-bold tabular-nums" style={{ color: BRAND }}>
-              {formatM(totalM)}
-            </p>
-          </motion.div>
-          <motion.div variants={item} className="rounded-xl border border-white/10 p-4">
-            <p className="text-xs uppercase tracking-wide text-gray-400">Promedio mensual</p>
-            <p className="mt-1 text-2xl font-bold tabular-nums" style={{ color: BRAND }}>
-              {formatM(promedioM)}
-            </p>
-          </motion.div>
-          <motion.div variants={item} className="rounded-xl border border-white/10 p-4">
-            <p className="text-xs uppercase tracking-wide text-gray-400">
-              Mejor mes <span className="normal-case text-gray-500">({mejorMes.mes})</span>
-            </p>
-            <p className="mt-1 text-2xl font-bold tabular-nums" style={{ color: BRAND }}>
-              {formatM(mejorMes.monto)}
-            </p>
-          </motion.div>
-        </motion.div>
-
-        {/* Lista con variación */}
-        <motion.ul
-          variants={container}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="divide-y divide-white/10 rounded-xl border border-white/10 overflow-hidden"
-        >
-          {bonificacionesData.map(({ mes, monto }, i) => {
-            const pctWidth = Math.max(0.04, monto / maxMonto);
-            const varData = variaciones[i];
-            const signo = varData ? Math.sign(varData.pct) : 0;
-            const varColor =
-              signo > 0 ? "text-emerald-400" : signo < 0 ? "text-rose-400" : "text-gray-400";
-            const varText =
-              varData == null
-                ? "—"
-                : `${(varData.pct >= 0 ? "+" : "")}${varData.pct.toFixed(1)}%`;
-
-            return (
-              <motion.li key={mes} variants={item} className="relative p-4 sm:p-5 hover:bg-white/5 transition-colors">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-300 text-sm sm:text-base">{mes}</span>
-                    {mostrarVariacion && <span className={`text-xs sm:text-sm ${varColor}`}>{varText}</span>}
-                  </div>
-                  <span className="text-white text-lg sm:text-xl font-semibold tabular-nums" style={{ color: BRAND }}>
-                    {formatM(monto)}
-                  </span>
-                </div>
-
-                {/* barrita mínima */}
-                <div className="mt-3 h-px w-full bg-white/5">
-                  <div className="h-px" style={{ width: `${pctWidth * 100}%`, backgroundColor: BRAND, opacity: 0.85 }} />
-                </div>
-              </motion.li>
-            );
-          })}
-        </motion.ul>
       </div>
     </section>
   );

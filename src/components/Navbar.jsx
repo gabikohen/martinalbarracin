@@ -49,18 +49,16 @@ export default function Navbar() {
   const toggleMenu = () => setOpen(!isOpen);
 
   return (
-    <div id="home" className="w-full p-4 bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A]">
+    <div id="home" className="w-full p-4 bg-black">
       <div className="flex items-center justify-between">
   {/* Logo */}
 <div className="inline-block transition-transform duration-300 hover:scale-110">
   <Image
-    src="/marteam-logo@2x.png"   // poné acá el nombre del archivo que subas a /public
+    src="/marteam.svg"   // poné acá el nombre del archivo que subas a /public
     alt="MarTeam"
-    width={880}                   // ancho lógico del @2x (doble del original)
-    height={400}                  // alto lógico del @2x
-    sizes="(min-width: 1024px) 24rem, (min-width: 640px) 20rem, 16rem"
-    className="h-16 sm:h-24 md:h-28 lg:h-32 w-auto drop-shadow-[0_10px_20px_rgba(223,185,90,0.6)]"
-    priority
+    width={180}                   // ancho lógico del @2x (doble del original)
+    height={90}                  // alto lógico del @2x
+   
   />
 </div>
         {/* Menú Desktop */}
