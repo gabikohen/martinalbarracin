@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 const HeroSection = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -43,13 +42,15 @@ const HeroSection = () => {
   useEffect(() => {
     if (!isClient || !sceneContainerRef.current || sceneContainerRef.current.clientWidth === 0) return;
 
-    // Se declaran las variables aquí para que sean accesibles en todo el hook
     let spawnHeight, spawnWidth;
 
     const initScene = (container) => {
       const scene = new THREE.Scene();
+      // Fondo negro
+      scene.background = new THREE.Color(0x000000); 
+
       const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      const renderer = new THREE.WebGLRenderer({ antialias: true }); // Se elimina alpha:true para el fondo negro
       renderer.setSize(container.clientWidth, container.clientHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
@@ -62,13 +63,12 @@ const HeroSection = () => {
       const objects = [];
       const viewHeight = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * 15;
       
-      // Se asigna el valor a las variables
       spawnWidth = viewHeight * 2.5;
       spawnHeight = viewHeight;
 
-      for (let i = 0; i < 150; i++) {
+      for (let i = 0; i < 30; i++) { // Reducido a 30 monedas
         const coin = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.2, 0.2, 0.04, 24),
+          new THREE.CylinderGeometry(0.3, 0.3, 0.04, 12), // Tamaño de moneda aumentado a 0.3
           new THREE.MeshPhongMaterial({
             color: 0xFFBF00, shininess: 300, specular: 0xffeeaa, emissive: 0x332200
           })
@@ -88,9 +88,7 @@ const HeroSection = () => {
 
       const composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
-      const bloomPass = new UnrealBloomPass(new THREE.Vector2(container.clientWidth, container.clientHeight), 1.2, 0.4, 0.8);
-      composer.addPass(bloomPass);
-
+      
       return { scene, camera, renderer, objects, composer };
     };
 
@@ -123,12 +121,9 @@ const HeroSection = () => {
           o.position.add(repelVector);
         }
 
-        // Reposiciona las monedas para que se mantengan en la pantalla (wrapping)
         if(o.position.y > spawnHeight / 2) o.position.y = -spawnHeight / 2;
         if(o.position.y < -spawnHeight / 2) o.position.y = spawnHeight / 2;
         
-        // --- CÓDIGO CORREGIDO ---
-        // Se añade la comprobación horizontal para que las monedas no se escapen
         if(o.position.x > spawnWidth / 2) o.position.x = -spawnWidth / 2;
         if(o.position.x < -spawnWidth / 2) o.position.x = spawnWidth / 2;
       });
@@ -161,7 +156,7 @@ const HeroSection = () => {
   }, [isClient]);
 
   return (
-    <div className="relative w-full h-screen bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] overflow-hidden">
+    <div className="relative w-full h-screen bg-black overflow-hidden">
       <div ref={sceneContainerRef} className="absolute inset-0 z-0 w-full h-full" />
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-11/12 md:w-2/3 lg:w-1/2 text-center px-4">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">

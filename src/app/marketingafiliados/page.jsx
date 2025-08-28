@@ -12,20 +12,28 @@ const fmtARS = (n) =>
 
 // CATEGORÍAS DIVERTIDAS (mismo orden)
 const CATEGORIAS = [
-  { icon: "😅", name: "Mano Temblorosa", desc: "Recién empezás, con ganas de más." },
-  { icon: "🎲", name: "Fichero Novato", desc: "Ya entendés la movida y sumás fichas." },
-  { icon: "🪙", name: "Aventurero del Tapete", desc: "Jugás seguido y empezás a destacar." },
-  { icon: "🎡", name: "Fan de la Ruleta", desc: "No te perdés una tirada." },
-  { icon: "🦊", name: "Zorro Apostador", desc: "Jugadas inteligentes, comisiones que crecen." },
-  { icon: "💥", name: "Rompe la Banca", desc: "Ganás en grande y te notan." },
-  { icon: "🦁", name: "León High Roller", desc: "Dominás las mesas como un jefe." },
-  { icon: "😏", name: "Maestro del Bluff", desc: "Estrategia y estilo, el combo ganador." },
-  { icon: "👑", name: "Rey del Casino", desc: "Entre los mejores del mes." },
-  { icon: "🏆", name: "Leyenda del Tapete", desc: "Nivel máximo, premios VIP y respeto total." },
+  { icon: "🎯", name: "El Novato", desc: "Primeras fichas, primera emoción.", comision: 6 },
+  { icon: "🧢", name: "El Pibe del Barrio", desc: "Te mandás con lo que tenés, humilde pero decidido.", comision: 7 },
+  { icon: "🎲", name: "El Tira Fichas", desc: "Siempre probás, aunque sea por diversión.", comision: 8 },
+  { icon: "😎", name: "El Caradura", desc: "Apostás sin miedo, aunque no tengas tanto.", comision: 9 },
+  { icon: "🔥", name: "El Quemado", desc: "Vas a todo o nada, sin cálculo.", comision: 10 },
+  { icon: "🌶️", name: "El Picante", desc: "Metés presión, incomodás a todos en la mesa.", comision: 11 },
+  { icon: "⚡", name: "El Máquina", desc: "Constancia total, no parás nunca de jugar.", comision: 12 },
+  { icon: "🦊", name: "El Vivo", desc: "Jugás con picardía, siempre encontrás ventaja.", comision: 13 },
+  { icon: "🦁", name: "El Fiera", desc: "Te imponés con garra, nadie te subestima.", comision: 14 },
+  { icon: "🥇", name: "El Campeón", desc: "Empezás a ganar seguido y lo notan todos.", comision: 15 },
+  { icon: "⭐", name: "El Crack", desc: "Sos referencia, hasta los demás te nombran.", comision: 16 },
+  { icon: "💼", name: "El Patrón de las Fichas", desc: "Respetado, manejás la mesa como propia.", comision: 17 },
+  { icon: "👑", name: "El Jefe de Mesa", desc: "Todos siguen tu ritmo, vos marcás el juego.", comision: 18 },
+  { icon: "🚀", name: "El Fenómeno", desc: "La rompés, todos hablan de vos.", comision: 19 },
+  { icon: "🏆", name: "El Inmortal", desc: "Te convertiste en leyenda, nadie te olvida.", comision: 20 },
 ];
 
 // % de comisión por categoría (podés ajustar)
-const COMISION_POR_CATEGORIA = [6, 8, 10, 12, 13, 14, 15, 16, 18, 20];
+const COMISION_POR_CATEGORIA = [
+  6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+  16, 17, 18, 19, 20
+];
 
 // Umbrales de PUNTOS -> categoría (puntos ~ pesos jugados + 10 por recomendado)
 // Ej: 0-4.999 → cat 0; 5.000-19.999 → cat 1; 20.000-49.999 → cat 2; 50.000+ → cat 3+ (vamos subiendo)
@@ -107,7 +115,7 @@ export default function Home() {
   const fichas = Math.max(0, ingresoMensual - efectivo);
 
   return (
-    <main className="bg-gradient-to-br from-[#0F0F0F] to-[#1A1A1A] text-white">
+    <main className="bg-black text-white">
       {/* HÉROE */}
       <section
         id="hero"

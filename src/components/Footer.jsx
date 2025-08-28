@@ -11,7 +11,7 @@ import Link from 'next/link';
 export default function Footer() {
   return (
     <footer className="bg-black  text-white pt-20 pb-10 px-6 sm:px-12 lg:px-32 transition-all duration-500">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-16 border-b border-white/20 pb-10 text-center">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-16  pb-10 text-center">
         {/* Logo y descripción */}
         <div className="lg:col-span-2">
           <h2 className="text-3xl lg:text-4xl font-extrabold text-[#dfb95a] drop-shadow-[0_0_12px_#facc15]">
@@ -118,16 +118,19 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Copyright centrado + badge 18+ al lado */}
-     <div className="mt-6 flex items-center justify-center gap-4 text-base text-white/80 text-center">
+<div className="mt-4 flex items-center justify-center gap-3 text-center text-white/80 text-base">
+  {/* Ícono 18+ */}
   <span
     aria-label="Contenido para mayores de 18"
-    className="inline-flex w-10 h-10 md:w-12 md:h-12 rounded-full border border-[#dfb95a] text-[#dfb95a] items-center justify-center font-semibold text-sm md:text-base tracking-wide"
+    className="inline-flex w-8 h-8 md:w-10 md:h-10 rounded-full border border-[#dfb95a] text-[#dfb95a] items-center justify-center font-semibold text-sm md:text-base tracking-wide"
   >
     18+
   </span>
+
+  {/* Texto derechos reservados */}
   <p>© 2025 Marteam by Martín Albarracín. Todos los derechos reservados.</p>
 </div>
+
 
       {/* Botón de WhatsApp flotante */}
       <a
