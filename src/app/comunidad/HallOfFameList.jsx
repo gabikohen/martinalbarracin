@@ -17,11 +17,11 @@ export default function HallOfFameList() {
 
   // Top 5 destacados
   const ganadoresTop = [
-    { id: 1, alias: "FieraDelPixel", categoria: "MS8", fecha: "2025-08-24", monto: 2500000 },
-    { id: 2, alias: "ReyDelClick", categoria: "MS7", fecha: "2025-08-23", monto: 1850000 },
-    { id: 3, alias: "DamaDeLaSuerte", categoria: "MS6", fecha: "2025-08-22", monto: 1500000 },
-    { id: 4, alias: "ElEstratega", categoria: "MS5", fecha: "2025-08-21", monto: 1100000 },
-    { id: 5, alias: "GenioDigital", categoria: "MS4", fecha: "2025-08-20", monto: 950000 },
+    { id: 1, alias: "Marisa23", categoria: "MS8", fecha: "2025-08-24", monto: 2500000 },
+    { id: 2, alias: "Diegoarma", categoria: "MS7", fecha: "2025-08-23", monto: 1850000 },
+    { id: 3, alias: "Topo23", categoria: "MS6", fecha: "2025-08-22", monto: 1500000 },
+    { id: 4, alias: "Marisab", categoria: "MS5", fecha: "2025-08-21", monto: 1100000 },
+    { id: 5, alias: "Marianosv2", categoria: "MS4", fecha: "2025-08-20", monto: 950000 },
   ];
 
   // Resto hasta 100

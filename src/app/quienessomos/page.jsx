@@ -60,7 +60,7 @@ export default function QuienesSomos() {
             paddingLeft: "4px",
           }}
         >
-          ¿Quiénes Somos?
+          Quiénes Somos
         </h2>
 
         {/* 🔹 Texto con efecto verde */}

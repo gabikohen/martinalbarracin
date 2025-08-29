@@ -6,15 +6,15 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const testimonials = [
-  { id: 1, name: "Diego Armando", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-  { id: 2, name: "Marisa Saba", text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam." },
-  { id: 3, name: "Jane Doe 3", text: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti." },
-  { id: 4, name: "Jane Doe 4", text: "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio." },
-  { id: 5, name: "Jane Doe 5", text: "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates." },
-  { id: 6, name: "Jane Doe 6", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse." },
-  { id: 7, name: "Jane Doe 7", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse." },
-  { id: 8, name: "Jane Doe 8", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse." },
-  { id: 9, name: "Jane Doe 0", text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse." },
+  { id: 1, name: "Nicolás Pereyra", text: "Probé varios cajeros, pero con ustedes las cargas entran al toque y todo es transparente. Me quedé por la confianza y las comisiones claras." },
+  { id: 2, name: "Rocío Medina", text: "Soy de Córdoba y valoro que me atiendan 24/7. Me avisan promos, cargan rápido y los retiros salen sin vueltas." },
+  { id: 3, name: "Diego Bustos", text: "El mejor precio y soporte por WhatsApp cuando lo necesito. Siempre cumplen y explican el tipo de cambio sin letra chica." },
+  { id: 4, name: "Julieta Benítez", text: "Entré por recomendación y sigo por el servicio: velocidad, atención humana y cero drama con los comprobantes." },
+  { id: 5, name: "Lautaro Acosta", text: "Para mí la rapidez es clave. Acá cargo en minutos y puedo aprovechar las mesas. Encima tiran bonificaciones seguido." },
+  { id: 6, name: "Camila Funes", text: "Confío porque priorizan la seguridad: validaciones, recibos y todo prolijo. Se nota que cuidan al jugador." },
+  { id: 7, name: "Federico Domínguez", text: "No solo venden, también asesoran. Me ayudaron a ordenar límites y no sobreapostar. Trato de primera." },
+  { id: 8, name: "Milagros Sosa", text: "Me copa el programa de fidelidad y los rankings semanales. Además, la atención es rápida y con buena onda." },
+  { id: 9, name: "Bruno Rinaldi", text: "Con otros siempre había demoras. Con ustedes, retiros en tiempo y forma incluso feriados. Cero estrés." },
 ];
 
 const TestimonialCard = ({ name, text }) => (

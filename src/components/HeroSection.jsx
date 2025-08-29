@@ -1,23 +1,16 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 
-const HeroSection = () => {
+import { useState, useEffect } from "react";
+
+export default function HeroSection() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isClient, setIsClient] = useState(false);
-  
-  const sceneContainerRef = useRef();
-  const threeRef = useRef();
-  const animationFrameRef = useRef();
-  const mousePosition = useRef({ x: 0, y: 0 });
 
-  const words = ["Lo", "que", "importa", "es","la","confianza","en","el","cajero,", "no", "la", "plataforma"];
+  const words = [
+    "Lo", "que", "importa", "es", "la", "confianza", "en", "el", "cajero,", "no", "la", "plataforma"
+  ];
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  useEffect(() => { setIsClient(true); }, []);
 
   useEffect(() => {
     if (!isClient) return;
@@ -27,158 +20,180 @@ const HeroSection = () => {
     return () => clearInterval(interval);
   }, [isClient, words.length]);
 
-  useEffect(() => {
-    if (!isClient) return;
-    const handleMouseMove = (event) => {
-      mousePosition.current = {
-        x: (event.clientX / window.innerWidth) * 2 - 1,
-        y: -(event.clientY / window.innerHeight) * 2 + 1,
-      };
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [isClient]);
+  // Columnas de monedas (izq/der)
+  const leftCoins = [
+    { left: "2%",  size: 35, duration: 16, delay: 0,    spin: 6.5 },
+    { left: "8%",  size: 30, duration: 18, delay: 1200, spin: 6.1 },
+    { left: "14%", size: 40, duration: 17, delay: 2400, spin: 6.8 },
+    { left: "20%", size: 33, duration: 19, delay: 3600, spin: 6.2 },
+    { left: "26%", size: 42, duration: 21, delay: 4800, spin: 7.4 },
+    { left: "30%", size: 28, duration: 15, delay: 6000, spin: 5.8 },
+  ];
 
-  useEffect(() => {
-    if (!isClient || !sceneContainerRef.current || sceneContainerRef.current.clientWidth === 0) return;
-
-    let spawnHeight, spawnWidth;
-
-    const initScene = (container) => {
-      const scene = new THREE.Scene();
-      // Fondo negro
-      scene.background = new THREE.Color(0x000000); 
-
-      const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-      const renderer = new THREE.WebGLRenderer({ antialias: true }); // Se elimina alpha:true para el fondo negro
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      container.appendChild(renderer.domElement);
-
-      scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 3.5);
-      directionalLight.position.set(5, 5, 5);
-      scene.add(directionalLight);
-
-      const objects = [];
-      const viewHeight = 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * 15;
-      
-      spawnWidth = viewHeight * 2.5;
-      spawnHeight = viewHeight;
-
-      for (let i = 0; i < 30; i++) { // Reducido a 30 monedas
-        const coin = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.3, 0.3, 0.04, 12), // Tamaño de moneda aumentado a 0.3
-          new THREE.MeshPhongMaterial({
-            color: 0xFFBF00, shininess: 300, specular: 0xffeeaa, emissive: 0x332200
-          })
-        );
-        coin.position.set(
-          (Math.random() - 0.5) * spawnWidth,
-          (Math.random() - 0.5) * spawnHeight,
-          (Math.random() - 0.5) * 15
-        );
-        coin.rotation.set(Math.random() * Math.PI, 0, Math.random() * Math.PI);
-        coin.userData.vy = Math.sin(Math.random() * Math.PI * 2) * 0.015;
-        scene.add(coin);
-        objects.push(coin);
-      }
-      
-      camera.position.z = 15;
-
-      const composer = new EffectComposer(renderer);
-      composer.addPass(new RenderPass(scene, camera));
-      
-      return { scene, camera, renderer, objects, composer };
-    };
-
-    const threeData = initScene(sceneContainerRef.current);
-    threeRef.current = threeData;
-
-    const animate = () => {
-      if (!threeRef.current) return;
-      animationFrameRef.current = requestAnimationFrame(animate);
-
-      const { scene, camera, renderer, objects, composer } = threeRef.current;
-      
-      scene.rotation.y = THREE.MathUtils.lerp(scene.rotation.y, mousePosition.current.x * 0.1, 0.05);
-      scene.rotation.x = THREE.MathUtils.lerp(scene.rotation.x, -mousePosition.current.y * 0.1, 0.05);
-      
-      const mouseVector = new THREE.Vector3(mousePosition.current.x, mousePosition.current.y, 0.5);
-      mouseVector.unproject(camera);
-      const dir = mouseVector.sub(camera.position).normalize();
-      const distance = -camera.position.z / dir.z;
-      const pos = camera.position.clone().add(dir.multiplyScalar(distance));
-      
-      objects.forEach((o) => {
-        o.rotation.y += 0.01;
-        o.position.y += o.userData.vy;
-
-        const distanceToMouse = o.position.distanceTo(pos);
-        if (distanceToMouse < 2) {
-          const repelForce = (1 - distanceToMouse / 2) * 0.1;
-          const repelVector = o.position.clone().sub(pos).normalize().multiplyScalar(repelForce);
-          o.position.add(repelVector);
-        }
-
-        if(o.position.y > spawnHeight / 2) o.position.y = -spawnHeight / 2;
-        if(o.position.y < -spawnHeight / 2) o.position.y = spawnHeight / 2;
-        
-        if(o.position.x > spawnWidth / 2) o.position.x = -spawnWidth / 2;
-        if(o.position.x < -spawnWidth / 2) o.position.x = spawnWidth / 2;
-      });
-
-      composer.render();
-    };
-
-    animate();
-
-    const handleResize = () => {
-      const container = sceneContainerRef.current;
-      if (!container || !threeRef.current) return;
-      
-      const { camera, renderer, composer } = threeRef.current;
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      composer.setSize(container.clientWidth, container.clientHeight);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      cancelAnimationFrame(animationFrameRef.current);
-      window.removeEventListener("resize", handleResize);
-      if(sceneContainerRef.current && threeRef.current?.renderer) {
-          sceneContainerRef.current.removeChild(threeRef.current.renderer.domElement);
-          threeRef.current.renderer.dispose();
-      }
-    };
-  }, [isClient]);
+  const rightCoins = [
+    { right: "2%",  size: 31, duration: 22, delay: 600,  spin: 6.6 },
+    { right: "8%",  size: 39, duration: 19, delay: 1800, spin: 6.3 },
+    { right: "14%", size: 29, duration: 16, delay: 3000, spin: 6.0 },
+    { right: "20%", size: 36, duration: 20, delay: 4200, spin: 6.9 },
+    { right: "26%", size: 32, duration: 17, delay: 5400, spin: 6.2 },
+    { right: "30%", size: 41, duration: 21, delay: 6600, spin: 7.2 },
+  ];
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden">
-      <div ref={sceneContainerRef} className="absolute inset-0 z-0 w-full h-full" />
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 w-11/12 md:w-2/3 lg:w-1/2 text-center px-4">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
-          {words.map((word, index) => (
-            <span
-              key={index}
-              className={`inline-block mr-4 transition-all duration-1000 transform ${
-                index <= currentWordIndex ? 'opacity-100' : 'opacity-0 -translate-y-4'
-              }`}
-              style={{
-                color: '#dfb95a',
-                textShadow: '0 0 10px rgba(229,192,123,0.5), 0 0 25px rgba(229,192,123,0.3)',
-                transitionDelay: `${index * 0.15}s`
-              }}
-            >
-              {word}
-            </span>
+    <>
+      {/* Keyframes locales */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+          @keyframes fallLinear {
+            0%   { transform: translateY(-30vh); opacity: 0; }
+            5%   { opacity: 1; }
+            95%  { opacity: 1; }
+            100% { transform: translateY(130vh); opacity: 0; }
+          }
+          @keyframes rotateCoin {
+            to { transform: rotateY(360deg); }
+          }
+        `,
+        }}
+      />
+
+      <section className="relative w-full h-[80vh] md:h-screen bg-black overflow-hidden">
+        {/* Monedas detrás del texto */}
+        <div className="pointer-events-none absolute inset-0 z-10">
+          {leftCoins.map((c, i) => (
+            <FallingCoin3D
+              key={`left-${i}`}
+              size={c.size}
+              duration={c.duration}
+              delay={c.delay}
+              spin={c.spin}
+              position={{ left: c.left }}
+            />
           ))}
-        </h1>
+          {rightCoins.map((c, i) => (
+            <FallingCoin3D
+              key={`right-${i}`}
+              size={c.size}
+              duration={c.duration}
+              delay={c.delay}
+              spin={c.spin}
+              position={{ right: c.right }}
+            />
+          ))}
+        </div>
+
+        {/* Texto central */}
+        <div className="absolute inset-0 z-50 flex items-center justify-center px-4 sm:px-6 md:px-8">
+          <h1 className="w-full max-w-4xl text-center text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight backdrop-blur-sm bg-black/20 rounded-lg p-4 sm:p-6 md:p-8">
+            {words.map((word, index) => (
+              <span
+                key={index}
+                className={`inline-block mr-2 sm:mr-3 md:mr-4 transition-all duration-1000 transform ${
+                  index <= currentWordIndex ? "opacity-100" : "opacity-0 -translate-y-4"
+                }`}
+                style={{
+                  color: "#dfb95a",
+                  textShadow:
+                    "0 0 20px rgba(229,192,123,0.8), 0 0 40px rgba(229,192,123,0.5), 2px 2px 4px rgba(0,0,0,0.8)",
+                  transitionDelay: `${index * 0.15}s`,
+                }}
+              >
+                {word}
+              </span>
+            ))}
+          </h1>
+        </div>
+      </section>
+    </>
+  );
+}
+
+/* ===== Moneda 3D que cae por los costados ===== */
+function FallingCoin3D({ size = 70, duration = 16, delay = 0, spin = 6.5, position = {} }) {
+  return (
+    <div
+      className="absolute will-change-transform"
+      style={{
+        ...position,
+        top: "-30vh",
+        animation: `fallLinear ${duration}s linear infinite`,
+        animationDelay: `${delay}ms`,
+      }}
+    >
+      {/* Cuerpo de la moneda (con grosor y brillo) */}
+      <div
+        className="
+          relative w-[0.15em] h-[1em]
+          bg-[conic-gradient(from_180deg_at_50%_50%,#dfb95a,#fff8d3,#dfb95a,#b08a2e,#dfb95a)]
+          [transform-style:preserve-3d]
+          drop-shadow-[0_0_25px_rgba(255,215,0,0.4)]
+          
+          before:content-[''] before:absolute before:w-[1em] before:h-[1em]
+          before:rounded-full before:right-[-0.4em]
+          before:[transform:rotateY(90deg)]
+          before:[-webkit-backface-visibility:hidden]
+          before:[backface-visibility:hidden]
+          before:bg-[linear-gradient(#dfb95a,#7a6524)]
+          before:shadow-[inset_2px_0_6px_rgba(0,0,0,0.6)]
+          
+          after:content-[''] after:absolute after:w-[1em] after:h-[1em]
+          after:rounded-full after:left-[-0.4em]
+          after:[transform:rotateY(-90deg)]
+          after:[-webkit-backface-visibility:hidden]
+          after:[backface-visibility:hidden]
+          after:bg-[linear-gradient(#dfb95a,#7a6524)]
+          after:shadow-[inset_-2px_0_6px_rgba(0,0,0,0.6)]
+        "
+        style={{
+          fontSize: `${size}px`,
+          animation: `rotateCoin ${spin}s linear infinite`,
+        }}
+      >
+        {/* Cara frontal */}
+        <div
+          className="
+            absolute w-[1em] h-[1em] overflow-hidden rounded-full
+            right-[-0.4em]
+            [transform:rotateY(-90deg)]
+            [-webkit-backface-visibility:hidden]
+            [backface-visibility:hidden]
+          "
+        >
+          <CoinFace />
+        </div>
+
+        {/* Cara trasera (espejada) */}
+        <div
+          className="
+            absolute w-[1em] h-[1em] overflow-hidden rounded-full
+            left-[-0.4em]
+            [transform:rotateY(90deg)]
+            [-webkit-backface-visibility:hidden]
+            [backface-visibility:hidden]
+          "
+        >
+          <CoinFace mirrored />
+        </div>
       </div>
     </div>
   );
-};
+}
 
-export default HeroSection;
+/* Caras con la imagen money.svg desde /public */
+function CoinFace({ mirrored = false }) {
+  return (
+    <img
+      src="/money.svg"
+      alt="coin face"
+      draggable={false}
+      className="w-full h-full"
+      style={{
+        display: "block",
+        objectFit: "contain",
+        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.6))",
+        transform: mirrored ? "scaleX(-1)" : undefined,
+      }}
+    />
+  );
+}

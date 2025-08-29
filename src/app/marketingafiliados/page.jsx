@@ -35,8 +35,7 @@ const COMISION_POR_CATEGORIA = [
   16, 17, 18, 19, 20
 ];
 
-// Umbrales de PUNTOS -> categoría (puntos ~ pesos jugados + 10 por recomendado)
-// Ej: 0-4.999 → cat 0; 5.000-19.999 → cat 1; 20.000-49.999 → cat 2; 50.000+ → cat 3+ (vamos subiendo)
+// Umbrales de PUNTOS -> categoría
 const UMBRALES_PUNTOS = [
   { max: 4999, idx: 0 },
   { max: 19999, idx: 1 },
@@ -91,7 +90,6 @@ export default function Home() {
   };
 
   // SISTEMA DE PUNTOS
-  // 10 puntos por recomendado + 1 punto por cada peso jugado (referidos + propio)
   const puntos = useMemo(() => {
     const base = (recomendados * 10) + (Math.max(0, jugadoRefs) + Math.max(0, jugadoPropio));
     return Math.max(0, Math.floor(base));
@@ -104,9 +102,7 @@ export default function Home() {
   // % comisión según categoría
   const comisionPct = COMISION_POR_CATEGORIA[categoriaIdx] ?? 0;
 
-  // Ingreso mensual estimado:
-  // Tomamos como base la actividad (jugado total de tus recomendados + lo tuyo)
-  // y aplicamos % de comisión por categoría.
+  // Ingreso mensual estimado
   const baseComisionable = Math.max(0, jugadoRefs) + Math.max(0, jugadoPropio);
   const ingresoMensual = Math.round(baseComisionable * (comisionPct / 100));
 
@@ -126,32 +122,20 @@ export default function Home() {
         }}
       >
         <div className="container mx-auto text-center bg-black/60 p-12 rounded-xl">
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-4 leading-tight">
-            Hacé Negocio con MarTeam
+          <h1 className="text-5xl md:text-7xl font-black text-[#dfb95a] mb-4 leading-tight">
+            Afiliate a MarTeam
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
-            Convertite en <span className="text-[#dfb95a] font-bold">jugador-inversionista</span>: jugá todas
+            Convertite en <span className="text-[#dfb95a] font-bold">jugador estratégico</span>: Jugá todas
             las semanas, recomendá clientes y cobrá comisiones en{" "}
             <span className="text-[#dfb95a]">dinero + fichas</span>.
           </p>
-          <a
-            href="#simulador"
-            className="bg-[#dfb95a] text-black py-4 px-10 rounded-lg font-bold hover:bg-yellow-300 transition-colors text-lg shadow-lg shadow-[#dfb95a]/30"
-          >
-            Calcular cuánto gano
-          </a>
         </div>
       </section>
 
-      {/* VALOR */}
-      <section id="negocio" className="py-20 px-4">
+      {/* VALOR — LEVANTADO UN POCO */}
+      <section id="negocio" className="py-10 px-4 -mt-8 sm:-mt-10 md:-mt-12 lg:-mt-16 relative z-10">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl sm:text-5xl font-black text-[#dfb95a] mb-4">Hacé negocio con MarTeam</h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-12">
-            Recomendás, jugás y crecés. Mientras más participás, más subís de nivel y mejores premios desbloqueás
-            en <span className="text-[#dfb95a] font-semibold">fichas + dinero</span>.
-          </p>
-
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="bg-[#1f1f1f] p-8 rounded-xl border border-gray-700 hover:-translate-y-2 transition-all">
               <h3 className="text-2xl font-bold mb-2">Ingresos Recurrentes</h3>
@@ -318,7 +302,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* RANGOS (para que se vea tu escalera de premios) */}
+      {/* RANGOS */}
       <section id="rangos" className="py-20 px-4 bg-[#111]">
         <div className="container mx-auto">
           <h2 className="text-4xl sm:text-5xl font-black text-center text-[#dfb95a] mb-12">
