@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { X, Sparkles, Gift } from "lucide-react";
 
 const PrizeWheel3D = ({ onClose }) => {
-  // MODIFICACIÓN 1: Inicializa 'isOpen' en 'false'. Se decidirá en useEffect si se abre.
   const [isOpen, setIsOpen] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState(null);
@@ -17,19 +16,16 @@ const PrizeWheel3D = ({ onClose }) => {
     { id: 1, text: "10%", value: 10, color: "#FF00FF" },
     { id: 2, text: "20%", value: 20, color: "#00FFFF" },
     { id: 3, text: "30%", value: 30, color: "#39FF14" },
-    { id: 4, text: "5%", value: 5, color: "#FFFF00" },
+    { id: 4, text: "5%",  value: 5,  color: "#FFFF00" },
     { id: 5, text: "15%", value: 15, color: "#FF1493" },
     { id: 6, text: "25%", value: 25, color: "#00FF00" },
     { id: 7, text: "35%", value: 35, color: "#FF4500" }
   ];
-
   const segmentAngle = 360 / prizes.length;
 
   useEffect(() => {
     if (!isSpinning) {
-      const interval = setInterval(() => {
-        setIdleRotation((prev) => prev + 0.3);
-      }, 50);
+      const interval = setInterval(() => setIdleRotation(prev => prev + 0.3), 50);
       return () => clearInterval(interval);
     }
   }, [isSpinning]);
@@ -38,18 +34,15 @@ const PrizeWheel3D = ({ onClose }) => {
     if (isSpinning || hasPlayed) return;
     setIsSpinning(true);
     setShowResult(false);
-    
-    // MODIFICACIÓN 3: Marcar que el usuario ya jugó en esta sesión.
-    sessionStorage.setItem('hasPlayedPrizeWheel', 'true');
+    sessionStorage.setItem("hasPlayedPrizeWheel", "true");
 
     const randomPrizeIndex = Math.floor(Math.random() * prizes.length);
-    const selectedPrize = prizes[randomPrizeIndex];
-
+    const sel = prizes[randomPrizeIndex];
     const targetAngle = randomPrizeIndex * segmentAngle + segmentAngle / 2;
     const spinRotation = 1440 + (360 - targetAngle);
 
-    setRotation((prev) => prev + spinRotation);
-    setSelectedPrize(selectedPrize);
+    setRotation(prev => prev + spinRotation);
+    setSelectedPrize(sel);
 
     setTimeout(() => {
       setIsSpinning(false);
@@ -68,35 +61,36 @@ const PrizeWheel3D = ({ onClose }) => {
 
   const closePopup = () => {
     setIsOpen(false);
-    // MODIFICACIÓN 4: Marcar también al cerrar, para que no vuelva a aparecer si no jugó.
-    sessionStorage.setItem('hasPlayedPrizeWheel', 'true');
+    sessionStorage.setItem("hasPlayedPrizeWheel", "true");
     resetGame();
     if (onClose) onClose();
   };
-  
-  // MODIFICACIÓN 2: Lógica principal para mostrar la ruleta solo una vez por sesión.
-  useEffect(() => {
-    const hasPlayedInSession = sessionStorage.getItem('hasPlayedPrizeWheel');
-    
-    // Si no hay registro de que haya jugado en esta sesión, mostramos la ruleta.
-    if (!hasPlayedInSession) {
-      setIsOpen(true);
-    }
-  }, []); // El array vacío asegura que esto se ejecute solo una vez cuando el componente se monta.
 
-  // Solo renderizamos el componente si isOpen es true.
-  if (!isOpen) {
-    return null;
-  }
+  // Mostrar la ruleta una sola vez por sesión
+  useEffect(() => {
+    const hasPlayedInSession = sessionStorage.getItem("hasPlayedPrizeWheel");
+    if (!hasPlayedInSession) setIsOpen(true);
+  }, []);
+
+  /* NUEVO: mientras isOpen = true, agrego la clase 'wheel-open' al <body>
+     para esconder letras/animaciones de fondo. */
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (isOpen) document.body.classList.add("wheel-open");
+    else document.body.classList.remove("wheel-open");
+    return () => document.body.classList.remove("wheel-open");
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
-    <div className=" bg-transparent flex items-center justify-center">
-      {/* Ya no es necesario el condicional {isOpen && ...} porque lo manejamos arriba */}
-      <div className="fixed inset-0  flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+    <div className="bg-transparent flex items-center justify-center">
+      <div className="fixed inset-0 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
         <div className="bg-black/60 rounded-3xl p-6 sm:p-8 max-w-md sm:max-w-2xl w-full relative shadow-2xl border border-white/20 backdrop-blur-md">
           <button
             onClick={closePopup}
             className="absolute top-4 right-4 text-gray-300 hover:text-white transition-colors z-10 bg-white/10 rounded-full p-2 shadow-lg hover:shadow-xl"
+            aria-label="Cerrar"
           >
             <X size={20} />
           </button>
@@ -109,14 +103,11 @@ const PrizeWheel3D = ({ onClose }) => {
             <div className="relative w-80 h-80 sm:w-96 sm:h-96 mx-auto mb-8">
               <div
                 className="relative w-full h-full rounded-full border-8 border-white/30 overflow-hidden shadow-[0_0_40px_rgba(255,255,0,0.5)] transition-transform duration-[3000ms] ease-out"
-                style={{
-                  transform: `rotate(${rotation + idleRotation}deg)`
-                }}
+                style={{ transform: `rotate(${rotation + idleRotation}deg)` }}
               >
                 {prizes.map((prize, index) => {
                   const startAngle = index * segmentAngle;
                   const endAngle = (index + 1) * segmentAngle;
-
                   return (
                     <div
                       key={`segment-${prize.id}`}
@@ -125,7 +116,7 @@ const PrizeWheel3D = ({ onClose }) => {
                         background: `conic-gradient(from ${startAngle}deg, ${prize.color} 0deg, ${prize.color} ${segmentAngle}deg, transparent ${segmentAngle}deg)`,
                         clipPath: `polygon(50% 50%, ${50 + 50 * Math.cos((startAngle - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin((startAngle - 90) * Math.PI / 180)}%, ${50 + 50 * Math.cos((endAngle - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin((endAngle - 90) * Math.PI / 180)}%)`
                       }}
-                    ></div>
+                    />
                   );
                 })}
 
@@ -135,7 +126,6 @@ const PrizeWheel3D = ({ onClose }) => {
                   const textRadius = 110;
                   const textX = Math.cos(textAngle) * textRadius;
                   const textY = Math.sin(textAngle) * textRadius;
-
                   return (
                     <div
                       key={`text-${prize.id}`}
@@ -157,14 +147,14 @@ const PrizeWheel3D = ({ onClose }) => {
                 })}
               </div>
 
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                 <div className="w-16 h-16 bg-yellow-400 rounded-full border-4 border-white shadow-[0_0_20px_rgba(255,255,0,0.8)] flex items-center justify-center">
                   <Gift className="w-6 h-6 text-yellow-800" />
                 </div>
               </div>
 
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-30">
-                <div className="w-0 h-0 border-l-8 border-r-8 border-b-16 border-transparent border-b-red-500"></div>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-30">
+                <div className="w-0 h-0 border-l-8 border-r-8 border-b-16 border-transparent border-b-red-500" />
               </div>
             </div>
 
@@ -173,16 +163,14 @@ const PrizeWheel3D = ({ onClose }) => {
                 onClick={spinWheel}
                 disabled={isSpinning}
                 className={`w-full py-4 px-8 rounded-xl font-bold text-lg transition-all duration-300 transform 
-                border border-white/20 shadow-[0_0_10px_rgba(255,255,255,0.1)] 
-                ${isSpinning
-                    ? 'bg-gray-400 cursor-not-allowed scale-95'
-                    : 'bg-transparent text-[#dfb95a] hover:scale-105 hover:text-[#dfb95a] hover:drop-shadow-[0_0_10px_rgba(229,192,123,0.8)]'
-                  }
-                `}
+                  border border-white/20 shadow-[0_0_10px_rgba(255,255,255,0.1)] 
+                  ${isSpinning
+                    ? "bg-gray-400 cursor-not-allowed scale-95"
+                    : "bg-transparent text-[#dfb95a] hover:scale-105 hover:text-[#dfb95a] hover:drop-shadow-[0_0_10px_rgba(229,192,123,0.8)]"}`}
               >
                 {isSpinning ? (
                   <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3"></div>
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3" />
                     Girando...
                   </div>
                 ) : (

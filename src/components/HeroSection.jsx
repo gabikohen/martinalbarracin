@@ -1,69 +1,115 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState, memo } from "react";
 
 export default function HeroSection() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [isClient, setIsClient] = useState(false);
-
-  const words = [
-    "Lo", "que", "importa", "es", "la", "confianza", "en", "el", "cajero,", "no", "la", "plataforma"
-  ];
-
-  useEffect(() => { setIsClient(true); }, []);
+  const words = ["Lo","que","importa","es","la","confianza","en","el","cajero,","no","la","plataforma"];
 
   useEffect(() => {
-    if (!isClient) return;
-    const interval = setInterval(() => {
-      setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+    const id = setInterval(() => {
+      setCurrentWordIndex((prev) => (prev + 1) % words.length);
     }, 2000);
-    return () => clearInterval(interval);
-  }, [isClient, words.length]);
+    return () => clearInterval(id);
+  }, []);
 
-  // Columnas de monedas (izq/der)
   const leftCoins = [
-    { left: "2%",  size: 35, duration: 16, delay: 0,    spin: 6.5 },
-    { left: "8%",  size: 30, duration: 18, delay: 1200, spin: 6.1 },
-    { left: "14%", size: 40, duration: 17, delay: 2400, spin: 6.8 },
-    { left: "20%", size: 33, duration: 19, delay: 3600, spin: 6.2 },
-    { left: "26%", size: 42, duration: 21, delay: 4800, spin: 7.4 },
-    { left: "30%", size: 28, duration: 15, delay: 6000, spin: 5.8 },
+    { left: "2%",  size: 35, duration: 16, delay: 0,    spin: 10 },
+    { left: "8%",  size: 30, duration: 18, delay: 1200, spin: 10 },
+    { left: "14%", size: 40, duration: 17, delay: 2400, spin: 10 },
+    { left: "20%", size: 33, duration: 19, delay: 3600, spin: 10 },
+    { left: "26%", size: 42, duration: 21, delay: 4800, spin: 10 },
+    { left: "30%", size: 28, duration: 15, delay: 6000, spin: 10 },
   ];
-
   const rightCoins = [
-    { right: "2%",  size: 31, duration: 22, delay: 600,  spin: 6.6 },
-    { right: "8%",  size: 39, duration: 19, delay: 1800, spin: 6.3 },
-    { right: "14%", size: 29, duration: 16, delay: 3000, spin: 6.0 },
-    { right: "20%", size: 36, duration: 20, delay: 4200, spin: 6.9 },
-    { right: "26%", size: 32, duration: 17, delay: 5400, spin: 6.2 },
-    { right: "30%", size: 41, duration: 21, delay: 6600, spin: 7.2 },
+    { right: "2%",  size: 31, duration: 22, delay: 600,  spin: 10 },
+    { right: "8%",  size: 39, duration: 19, delay: 1800, spin: 10 },
+    { right: "14%", size: 29, duration: 16, delay: 3000, spin: 10 },
+    { right: "20%", size: 36, duration: 20, delay: 4200, spin: 10 },
+    { right: "26%", size: 32, duration: 17, delay: 5400, spin: 10 },
+    { right: "30%", size: 41, duration: 21, delay: 6600, spin: 10 },
   ];
 
   return (
     <>
-      {/* Keyframes locales */}
+      {/* CSS monedas 3D */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
+          .wheel-open .hide-when-wheel { display: none !important; }
+
+          :root{
+            --coin-gold-1:#dfb95a;
+            --coin-gold-2:#7a6524;
+            --coin-highlight:#fff8d3;
+            --coin-thickness:0.14em; 
+          }
           @keyframes fallLinear {
-            0%   { transform: translateY(-30vh); opacity: 0; }
-            5%   { opacity: 1; }
-            95%  { opacity: 1; }
+            0% { transform: translateY(-30vh); opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
             100% { transform: translateY(130vh); opacity: 0; }
           }
-          @keyframes rotateCoin {
-            to { transform: rotateY(360deg); }
+          @keyframes coin-rotate { to { transform: rotateY(360deg); } }
+
+          .coin3d{
+            font-size: var(--coin-size,60px);
+            width: var(--coin-thickness);
+            height: 1em;
+            position: relative;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            border-radius: calc(var(--coin-thickness) / 2);
+            background: linear-gradient(var(--coin-gold-1), var(--coin-gold-2));
+            box-shadow: inset 0 0 10px rgba(0,0,0,.35);
+            animation: coin-rotate var(--coin-spin,6s) linear infinite;
+            will-change: transform;
+          }
+
+          .coin3d::before, .coin3d::after{
+            content:"";
+            position:absolute; width:1em; height:1em; border-radius:50%;
+            backface-visibility:hidden;
+            background: radial-gradient(ellipse at 30% 30%, var(--coin-highlight) 0%, var(--coin-gold-1) 40%, #b08a2e 60%, var(--coin-gold-2) 100%);
+            box-shadow: inset 0 0 10px rgba(0,0,0,.45);
+          }
+          .coin3d::before{
+            right: calc(var(--coin-thickness) * -4);
+            transform: rotateY(90deg);
+          }
+          .coin3d::after{
+            left: calc(var(--coin-thickness) * -4);
+            transform: rotateY(-90deg);
+          }
+
+          .coin3d .side{
+            position:absolute; width:1em; height:1em;
+            border-radius:50%; overflow:hidden;
+            box-shadow: inset 0 0 8px rgba(0,0,0,.35);
+            -webkit-backface-visibility:hidden; backface-visibility:hidden;
+          }
+          .coin3d .side.heads{
+            right: calc(var(--coin-thickness) * -4);
+            transform: rotateY(-90deg);
+          }
+          .coin3d .side.tails{
+            left: calc(var(--coin-thickness) * -4);
+            transform: rotateY(90deg);
+          }
+          .coin3d .side > img{
+            width:100%; height:100%; display:block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,.55));
           }
         `,
         }}
       />
 
       <section className="relative w-full h-[80vh] md:h-screen bg-black overflow-hidden">
-        {/* Monedas detrás del texto */}
-        <div className="pointer-events-none absolute inset-0 z-10">
+        {/* Monedas cayendo */}
+        <div className="pointer-events-none absolute inset-0 z-10 hide-when-wheel">
           {leftCoins.map((c, i) => (
-            <FallingCoin3D
-              key={`left-${i}`}
+            <FallingCoin
+              key={`l-${i}`}
               size={c.size}
               duration={c.duration}
               delay={c.delay}
@@ -72,8 +118,8 @@ export default function HeroSection() {
             />
           ))}
           {rightCoins.map((c, i) => (
-            <FallingCoin3D
-              key={`right-${i}`}
+            <FallingCoin
+              key={`r-${i}`}
               size={c.size}
               duration={c.duration}
               delay={c.delay}
@@ -84,7 +130,7 @@ export default function HeroSection() {
         </div>
 
         {/* Texto central */}
-        <div className="absolute inset-0 z-50 flex items-center justify-center px-4 sm:px-6 md:px-8">
+        <div className="absolute inset-0 z-50 flex items-center justify-center px-4 sm:px-6 md:px-8 hide-when-wheel">
           <h1 className="w-full max-w-4xl text-center text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight backdrop-blur-sm bg-black/20 rounded-lg p-4 sm:p-6 md:p-8">
             {words.map((word, index) => (
               <span
@@ -109,8 +155,8 @@ export default function HeroSection() {
   );
 }
 
-/* ===== Moneda 3D que cae por los costados ===== */
-function FallingCoin3D({ size = 70, duration = 16, delay = 0, spin = 6.5, position = {} }) {
+/* Contenedor de la moneda que cae */
+const FallingCoin = memo(function FallingCoin({ size = 60, duration = 16, delay = 0, spin = 11, position = {} }) {
   return (
     <div
       className="absolute will-change-transform"
@@ -119,81 +165,28 @@ function FallingCoin3D({ size = 70, duration = 16, delay = 0, spin = 6.5, positi
         top: "-30vh",
         animation: `fallLinear ${duration}s linear infinite`,
         animationDelay: `${delay}ms`,
+        perspective: "900px",
+        perspectiveOrigin: "50% 50%",
       }}
     >
-      {/* Cuerpo de la moneda (con grosor y brillo) */}
-      <div
-        className="
-          relative w-[0.15em] h-[1em]
-          bg-[conic-gradient(from_180deg_at_50%_50%,#dfb95a,#fff8d3,#dfb95a,#b08a2e,#dfb95a)]
-          [transform-style:preserve-3d]
-          drop-shadow-[0_0_25px_rgba(255,215,0,0.4)]
-          
-          before:content-[''] before:absolute before:w-[1em] before:h-[1em]
-          before:rounded-full before:right-[-0.4em]
-          before:[transform:rotateY(90deg)]
-          before:[-webkit-backface-visibility:hidden]
-          before:[backface-visibility:hidden]
-          before:bg-[linear-gradient(#dfb95a,#7a6524)]
-          before:shadow-[inset_2px_0_6px_rgba(0,0,0,0.6)]
-          
-          after:content-[''] after:absolute after:w-[1em] after:h-[1em]
-          after:rounded-full after:left-[-0.4em]
-          after:[transform:rotateY(-90deg)]
-          after:[-webkit-backface-visibility:hidden]
-          after:[backface-visibility:hidden]
-          after:bg-[linear-gradient(#dfb95a,#7a6524)]
-          after:shadow-[inset_-2px_0_6px_rgba(0,0,0,0.6)]
-        "
-        style={{
-          fontSize: `${size}px`,
-          animation: `rotateCoin ${spin}s linear infinite`,
-        }}
-      >
-        {/* Cara frontal */}
-        <div
-          className="
-            absolute w-[1em] h-[1em] overflow-hidden rounded-full
-            right-[-0.4em]
-            [transform:rotateY(-90deg)]
-            [-webkit-backface-visibility:hidden]
-            [backface-visibility:hidden]
-          "
-        >
-          <CoinFace />
-        </div>
-
-        {/* Cara trasera (espejada) */}
-        <div
-          className="
-            absolute w-[1em] h-[1em] overflow-hidden rounded-full
-            left-[-0.4em]
-            [transform:rotateY(90deg)]
-            [-webkit-backface-visibility:hidden]
-            [backface-visibility:hidden]
-          "
-        >
-          <CoinFace mirrored />
-        </div>
-      </div>
+      <Coin3D size={size} spin={spin} front="/money.svg" back="/money.svg" />
     </div>
   );
-}
+});
 
-/* Caras con la imagen money.svg desde /public */
-function CoinFace({ mirrored = false }) {
+/* Moneda 3D */
+function Coin3D({ size = 90, spin = 9, front = "/money.svg", back = "/money.svg" }) {
   return (
-    <img
-      src="/money.svg"
-      alt="coin face"
-      draggable={false}
-      className="w-full h-full"
-      style={{
-        display: "block",
-        objectFit: "contain",
-        filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.6))",
-        transform: mirrored ? "scaleX(-1)" : undefined,
-      }}
-    />
+    <div
+      className="coin3d drop-shadow-[0_0_28px_rgba(255,215,0,0.38)]"
+      style={{ ["--coin-size"]: `${size}px`, ["--coin-spin"]: `${spin}s` }}
+    >
+      <div className="side heads">
+        <img src={front} alt="cara" draggable={false} />
+      </div>
+      <div className="side tails">
+        <img src={back} alt="cruz" draggable={false} style={{ transform: "scaleX(-1)" }} />
+      </div>
+    </div>
   );
 }
