@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 
 // Datos ordenados de enero a agosto
 const bonificacionesData = [
-  { mes: "Enero", monto: "$1.5 Millones" },
-  { mes: "Febrero", monto: "$1.7 Millones" },
-  { mes: "Marzo", monto: "$2.0 Millones" },
-  { mes: "Abril", monto: "$1.8 Millones" },
-  { mes: "Mayo", monto: "$2.3 Millones" },
-  { mes: "Junio", monto: "$1.9 Millones" },
-  { mes: "Julio", monto: "$2.1 Millones" },
-  { mes: "Agosto", monto: "$2.5 Millones" },
+  { mes: "Enero", monto: "$12.5 Millones" },
+  { mes: "Febrero", monto: "$15.7 Millones" },
+  { mes: "Marzo", monto: "$18.0 Millones" },
+  { mes: "Abril", monto: "$21.3 Millones" },
+  { mes: "Mayo", monto: "$23.3 Millones" },
+  { mes: "Junio", monto: "$25.9 Millones" },
+  { mes: "Julio", monto: "$29.1 Millones" },
+  { mes: "Agosto", monto: "$36.5 Millones" },
 ];
 
 // Calcular monto total numérico
