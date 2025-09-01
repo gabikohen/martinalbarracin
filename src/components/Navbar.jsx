@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -13,17 +12,14 @@ export default function Navbar() {
   useEffect(() => {
     if (isOpen) {
       const scrollY = window.scrollY;
-      // Fijamos el body para que no se mueva (iOS-friendly)
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
       document.body.style.left = "0";
       document.body.style.right = "0";
       document.body.style.width = "100%";
       document.body.style.overflowY = "hidden";
-      // Evitar “salto” por smooth scroll
       document.documentElement.style.scrollBehavior = "auto";
     } else {
-      // Restaurar estado anterior del body y el scroll
       const top = document.body.style.top;
       document.body.style.position = "";
       document.body.style.top = "";
@@ -37,7 +33,6 @@ export default function Navbar() {
         window.scrollTo(0, y);
       }
     }
-    // Limpieza por si el componente se desmonta con el menú abierto
     return () => {
       document.body.style.position = "";
       document.body.style.top = "";
@@ -49,40 +44,11 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    const triggerAnimation = () => {
-      const letters = document.querySelectorAll(".letter");
-      const subWords = document.querySelectorAll(".sub-word");
-
-      letters.forEach((letter) => {
-        letter.classList.remove("scale-100", "rotate-0");
-        letter.classList.add("scale-125", "rotate-[360deg]");
-        setTimeout(() => {
-          letter.classList.remove("scale-125", "rotate-[360deg]");
-          letter.classList.add("scale-100", "rotate-0");
-        }, 600);
-      });
-
-      subWords.forEach((word, index) => {
-        word.classList.add("-translate-y-5");
-        setTimeout(() => {
-          word.classList.remove("-translate-y-5");
-        }, index * 100);
-      });
-    };
-
-    const interval = setInterval(() => {
-      if (Math.random() > 0.7) triggerAnimation();
-    }, 8000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   const navItems = [
-    { label: "Home", href: "/", isExternal: false },
-    { label: "Quienes Somos", href: "/quienessomos", isExternal: false },
-    { label: "Comunidad", href: "/comunidad", isExternal: false },
-    { label: "Afiliados", href: "/marketingafiliados", isExternal: false },
+    { label: "Home", href: "/" },
+    { label: "Quienes Somos", href: "/quienessomos" },
+    { label: "Comunidad", href: "/comunidad" },
+    { label: "Afiliados", href: "/marketingafiliados" },
   ];
 
   const toggleMenu = () => setOpen(!isOpen);
@@ -132,7 +98,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Menú Mobile - Centrado y sin líneas */}
+      {/* Menú Mobile */}
       <div className={`${isOpen ? "block" : "hidden"} md:hidden mt-8`}>
         <ul className="flex flex-col items-center space-y-6 p-6 text-xl font-bold text-white">
           {navItems.map((item) => (
@@ -146,7 +112,6 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
-          {/* Botón con más espacio y efectos */}
           <li className="mt-8 w-full max-w-xs">
             <button className="relative w-full bg-transparent text-white py-4 px-8 rounded-lg border-2 border-[#dfb95a]
                               transition duration-300 hover:-translate-y-1 hover:scale-110
