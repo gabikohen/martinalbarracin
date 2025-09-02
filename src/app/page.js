@@ -1,19 +1,16 @@
-
-import styles from "./page.module.css";
-
-// src/app/page.js
-import HeroSection from "../components/HeroSection";
-import Bonificaciones from "../components//Bonificaciones";
 import Ruleta from "../components/Ruleta";
+import Bonificaciones from "../components/Bonificaciones";
 import Testimonios from "../components/Testimonios";
+
+import HeroSection from "@/components/HeroSection";
 
 export default function Home() {
   return (
     <main>
-       <Ruleta />
-      <HeroSection />
+      <Ruleta />
+    <HeroSection/>
+    
       <Bonificaciones />
-   
       <Testimonios />
     </main>
   );
