@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Datos ordenados de enero a agosto
 const bonificacionesData = [
@@ -15,32 +15,52 @@ const bonificacionesData = [
   { mes: "Agosto", monto: "$36.5 Millones" },
 ];
 
-// Calcular monto total numérico
-const montoTotal = bonificacionesData.reduce((total, item) => {
-  const montoNumerico = parseFloat(item.monto.replace(/[^0-9.]/g, ""));
-  return total + montoNumerico;
-}, 0).toFixed(1);
+// Calcular monto total numérico (1 decimal)
+const montoTotalNumber = Number(
+  bonificacionesData
+    .reduce((total, item) => total + parseFloat(item.monto.replace(/[^0-9.]/g, "")), 0)
+    .toFixed(1)
+);
+
+const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
 const Bonificaciones = () => {
   const [count, setCount] = useState(0);
+  const animatedOnceRef = useRef(false); // evita reanimar si el componente re-renderiza
+  const rafIdRef = useRef(null);
 
-  // Animación del contador para el total
+  // Animación del contador para el total (sube y queda)
   useEffect(() => {
-    let start = 0;
-    const end = parseFloat(montoTotal);
-    if (start === end) return;
+    if (animatedOnceRef.current) return; // ya se animó
+    animatedOnceRef.current = true;
 
-    const step = () => {
-      start += 0.1;
-      if (start >= end) {
-        setCount(end);
+    const duration = 2000; // ms
+    const startValue = 0;
+    const endValue = montoTotalNumber;
+    const startTime = performance.now();
+
+    const tick = (now) => {
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      const eased = easeOutCubic(t);
+      const value = startValue + (endValue - startValue) * eased;
+
+      // redondeo a 1 decimal para render
+      setCount(Number(value.toFixed(1)));
+
+      if (t < 1) {
+        rafIdRef.current = requestAnimationFrame(tick);
       } else {
-        setCount(parseFloat(start.toFixed(1)));
-        requestAnimationFrame(step);
+        // asegurar que queda exactamente en el final
+        setCount(Number(endValue.toFixed(1)));
+        if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       }
     };
 
-    requestAnimationFrame(step);
+    rafIdRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+    };
   }, []);
 
   return (
@@ -79,17 +99,17 @@ const Bonificaciones = () => {
                   hidden: { opacity: 0, y: 20, scale: 0.95 },
                   visible: { opacity: 1, y: 0, scale: 1 },
                 }}
-                whileHover={{ scale: 1.05, boxShadow: "0px 6px 18px rgba(223, 185, 90, 0.25)" }}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0px 6px 18px rgba(223, 185, 90, 0.25)",
+                }}
                 transition={{ duration: 0.3 }}
                 className="bg-transparent border border-neutral-800 rounded-xl p-5 text-center"
               >
                 <p className="text-base font-medium text-gray-400">
                   {bono.mes} 2025
                 </p>
-                <p
-                  className="text-xl font-bold mt-2"
-                  style={{ color: "#dfb95a" }}
-                >
+                <p className="text-xl font-bold mt-2" style={{ color: "#dfb95a" }}>
                   {bono.monto}
                 </p>
               </motion.div>
@@ -107,13 +127,13 @@ const Bonificaciones = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
-              className="bg-transparent  border border-neutral-800 backdrop-blur-sm p-8 rounded-xl shadow text-center lg:text-left"
+              className="bg-transparent border border-neutral-800 backdrop-blur-sm p-8 rounded-xl shadow text-center lg:text-left"
             >
               <h3 className="text-xl font-semibold text-gray-300">
                 Bonificaciones Totales
               </h3>
+              {/* ❗️OJO: sin key para no reiniciar animación */}
               <motion.p
-                key={count}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}

@@ -48,7 +48,7 @@ export default function Navbar() {
     { label: "Home", href: "/" },
     { label: "Quienes Somos", href: "/quienessomos" },
     { label: "Comunidad", href: "/comunidad" },
-    { label: "Afiliados", href: "/marketingafiliados" },
+    
   ];
 
   const toggleMenu = () => setOpen(!isOpen);

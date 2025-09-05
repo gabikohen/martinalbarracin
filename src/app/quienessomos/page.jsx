@@ -64,14 +64,14 @@ export default function QuienesSomos() {
         </h2>
 
         {/* 🔹 Texto con efecto verde */}
-        <p className="text-lg sm:text-xl mb-12 leading-relaxed text-gray-100 max-w-3xl mx-auto">
-          En <NeonText>MarTeam</NeonText> somos tu agente en fichas digitales para jugar en casinos online.
-          Lo que nos diferencia de los demás cajeros es nuestra combinación única de{" "}
-          <NeonText className="font-semibold">
-            confianza, atención humana y beneficios reales
-          </NeonText>
-          . No vendemos fichas: entregamos diversión, bonos y una experiencia inigualable.
-        </p>
+        <p className="text-lg sm:text-xl mb-12 leading-relaxed text-gray-100 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+  En <NeonText>MarTeam</NeonText> te prometemos el mejor servicio de{" "}
+  <NeonText className="font-semibold">entretenimiento online</NeonText> del mercado. 
+  Además, estamos obsesionados con la mejora continua para poder brindarte una{" "}
+  <NeonText className="font-semibold">experiencia premium</NeonText>, como vos te mereces. 
+  Al ser servicio, tu <NeonText className="font-semibold">opinión</NeonText> es lo que más nos importa 
+  y eso nos diferencia del resto, no dudes en compartirnos tus sensaciones.
+</p>
 
         {/* 🔹 Lista de beneficios */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -99,7 +99,8 @@ export default function QuienesSomos() {
   animate={{ opacity: [1, 0.6, 1, 0.8, 1] }}
   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
 >
-  ¡Sumate a <span className="uppercase">MarTeam</span> y llevá tus fichas al siguiente nivel!
+  ¡Sumate a <span className="uppercase">MarTeam</span> y llevá tu 
+diversión al siguiente nivel!
 </motion.span>
       </div>
     </section>

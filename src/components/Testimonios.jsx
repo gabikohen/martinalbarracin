@@ -18,12 +18,15 @@ const testimonials = [
 ];
 
 const TestimonialCard = ({ name, text }) => (
-  <div className="bg-black border border-white/20 rounded-2xl px-8 py-12  h-full w-full flex flex-col justify-between">
+  <div className="bg-black border border-white/20 rounded-2xl px-8 py-12 h-full w-full flex flex-col justify-between">
     <div>
-      <div className="text-[#dfb95a] mb-4 text-3xl">{"★".repeat(7)}</div>
-      <p className="text-base leading-relaxed tracking-wide mb-6">“{text}”</p>
+      <div className="text-[#dfb95a] mb-4 text-3xl" aria-hidden>{"★".repeat(7)}</div>
+      {/* 👉 Sin comillas */}
+      <p className="text-base leading-relaxed tracking-wide mb-6 text-neutral-100">
+        {text}
+      </p>
     </div>
-    <p className="text-right text-sm font-light">{name}</p>
+    <p className="text-right text-sm font-light text-neutral-400">— {name}</p>
   </div>
 );
 
@@ -48,9 +51,9 @@ const Testimonial = () => {
   return (
     <div id="testimonios" className="max-w-full mx-auto px-4 py-6 overflow-hidden">
       <Slider {...settings}>
-        {testimonials.map((testimonial) => (
-          <div key={testimonial.id} className="px-2 sm:px-3 md:px-4 h-[340px]">
-            <TestimonialCard {...testimonial} />
+        {testimonials.map((t) => (
+          <div key={t.id} className="px-2 sm:px-3 md:px-4 h-[340px]">
+            <TestimonialCard {...t} />
           </div>
         ))}
       </Slider>

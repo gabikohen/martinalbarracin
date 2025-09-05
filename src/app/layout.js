@@ -26,8 +26,7 @@ export default function RootLayout({ children }) {
       <body className={`
         ${geistSans.variable} ${geistMono.variable} 
         min-h-screen 
-        bg-gradient-to-br from-[#E5C07B]/5 to-transparent 
-        border-t-2 border-[#E5C07B]/20 
+        bg-black
         text-white 
         transition-all duration-500
       `}>

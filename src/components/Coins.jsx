@@ -6,30 +6,39 @@ export default function Coins() {
   const containerRef = useRef(null);
 
   useEffect(() => {
-   const container = document.querySelector('.container');
-        const numCoins = 30;
+    const container = containerRef.current;
+    if (!container) return;
 
-        for (let i = 0; i < numCoins; i++) {
-            const coin = document.createElement('div');
-            coin.classList.add('coin');
-            coin.style.left = `${Math.random() * 100}%`; // Posición horizontal aleatoria
-            coin.style.animationDuration = `${5 + Math.random() * 10}s, ${3 + Math.random() * 3}s`; // Duración caída (5-15s), rotación (3-6s)
-            coin.style.animationDelay = `-${Math.random() * 15}s, 0s`; // Delay para loop
-            coin.style.fontSize = `${30 + Math.random() * 40}px`; // Tamaño aleatorio (30-70px)
+    container.innerHTML = "";
 
-            // Cara "heads"
-            const heads = document.createElement('div');
-            heads.classList.add('side', 'heads');
+    // 👉 Cantidad según breakpoint
+    const w = window.innerWidth;
+    let numCoins = 20;
+    if (w < 640) {
+      numCoins = 12; // mobile
+    } else if (w < 1024) {
+      numCoins = 20; // tablet
+    } else {
+      numCoins = 30; // desktop
+    }
 
-            // Cara "tails"
-            const tails = document.createElement('div');
-            tails.classList.add('side', 'tails');
+    for (let i = 0; i < numCoins; i++) {
+      const coin = document.createElement("div");
+      coin.className = "coin";
 
-            coin.appendChild(heads);
-            coin.appendChild(tails);
-            container.appendChild(coin);
-        }
-    
+      // Posición horizontal (aleatoria)
+      coin.style.left = `${Math.random() * 100}%`;
+
+      // Duraciones y delays
+      coin.style.animationDuration = `${5 + Math.random() * 10}s, ${3 + Math.random() * 3}s`;
+      coin.style.animationDelay = `-${Math.random() * 15}s, 0s`;
+
+      container.appendChild(coin);
+    }
+
+    return () => {
+      container.innerHTML = "";
+    };
   }, []);
 
   return <div ref={containerRef} className="container"></div>;
