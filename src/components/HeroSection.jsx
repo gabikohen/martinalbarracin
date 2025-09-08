@@ -40,18 +40,16 @@ export default function HeroSection() {
     };
 
     type(); // arranca typing
-
-    return () => {};
   }, [text]);
 
   return (
-    <section className="relative isolate w-full h-[80vh] md:h-screen bg-black overflow-hidden">
-      {/* Fondo de monedas dispersas */}
-      <div className="pointer-events-none absolute inset-0 z-10">
-        <Coins />
-      </div>
+    <section className="relative isolate w-full h-[80vh] md:h-screen bg-black overflow-visible group">
+      {/* Fondo de monedas SOLO en mobile y solo en hover */}
+    <div className="pointer-events-none absolute inset-0 w-full h-full z-10">
+  <Coins />
+</div>
 
-      {/* Texto central (más arriba con mt negativo responsivo) */}
+      {/* Texto central */}
       <div className="absolute inset-0 z-50 flex items-center justify-center px-4 mt-[-40px] sm:mt-[-60px] lg:mt-[-80px]">
         <h1
           className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-center max-w-4xl select-none ${

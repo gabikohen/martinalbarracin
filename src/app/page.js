@@ -9,18 +9,20 @@ import Testimonios from "@/components/Testimonios";
 export default function Page() {
   const [showContent, setShowContent] = useState(false);
 
+  const handleContinue = () => {
+    setShowContent(true);
+  };
+
+  if (!showContent) {
+    // 🔹 SOLO SlotMachine, sin Navbar ni Footer
+    return <SlotMachine onContinue={handleContinue} />;
+  }
+
   return (
     <>
-      {!showContent ? (
-        <SlotMachine onContinue={() => setShowContent(true)} />
-      ) : (
-        <>
-          <HeroSection />
-          <Bonificaciones />
-          <Testimonios />
-      
-        </>
-      )}
+      <HeroSection />
+      <Bonificaciones />
+      <Testimonios />
     </>
   );
 }

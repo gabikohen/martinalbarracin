@@ -24,15 +24,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-black text-white transition-all duration-500 flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col bg-black text-white`}
       >
-        {/* Navbar arriba */}
+        {/* Navbar siempre visible */}
         <Navbar />
 
-        {/* Contenido dinámico */}
+        {/* Contenido dinámico (ej: HeroSection, LegalSection, etc.) */}
         <main className="flex-1">{children}</main>
 
-        {/* Footer abajo */}
+        {/* Footer siempre visible */}
         <Footer />
       </body>
     </html>

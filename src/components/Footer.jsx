@@ -68,9 +68,9 @@ export default function Footer() {
             Compañía
           </h3>
           <ul className="space-y-3 text-base text-white/90">
-            <li className="hover:text-[#dfb95a] transition">
+          {/* <li className="hover:text-[#dfb95a] transition">
               <Link href="/afiliate">Afíliate</Link>
-            </li>
+            </li>*/}
             <li className="hover:text-[#dfb95a] transition">
               <Link href="/terminos">Términos y Condiciones</Link>
             </li>

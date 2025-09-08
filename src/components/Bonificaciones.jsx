@@ -1,33 +1,47 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-// Datos ordenados de enero a agosto
+// Datos ordenados de enero a agosto (dejé tus textos tal cual)
 const bonificacionesData = [
-  { mes: "Enero", monto: "$12.5 Millones" },
+  { mes: "Enero",   monto: "$12.5 Millones" },
   { mes: "Febrero", monto: "$15.7 Millones" },
-  { mes: "Marzo", monto: "$18.0 Millones" },
-  { mes: "Abril", monto: "$21.3 Millones" },
-  { mes: "Mayo", monto: "$23.3 Millones" },
-  { mes: "Junio", monto: "$25.9 Millones" },
-  { mes: "Julio", monto: "$29.1 Millones" },
-  { mes: "Agosto", monto: "$36.5 Millones" },
+  { mes: "Marzo",   monto: "$18.0 Millones" },
+  { mes: "Abril",   monto: "$21.3 Millones" },
+  { mes: "Mayo",    monto: "$23.3 Millones" },
+  { mes: "Junio",   monto: "$25.9 Millones" },
+  { mes: "Julio",   monto: "$29.1 Millones" },
+  { mes: "Agosto",  monto: "$36.5 Millones" },
 ];
 
-// Calcular monto total numérico (1 decimal)
-const montoTotalNumber = Number(
-  bonificacionesData
-    .reduce((total, item) => total + parseFloat(item.monto.replace(/[^0-9.]/g, "")), 0)
-    .toFixed(1)
-);
+// Parser robusto: acepta $ , espacios, "Millones/Millón", coma o punto
+function parseMonto(str) {
+  if (typeof str !== "string") return 0;
+  const normalized = str
+    .toLowerCase()
+    .replace(/millones?|mm?\.?/g, "") // quita "Millones/Millón/MM"
+    .replace(/\s+/g, " ")
+    .replace(/,/g, "."); // convierte coma decimal a punto
+  const num = parseFloat(normalized.replace(/[^0-9.]/g, ""));
+  return Number.isFinite(num) ? num : 0;
+}
 
 const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
-const Bonificaciones = () => {
+export default function Bonificaciones() {
   const [count, setCount] = useState(0);
   const animatedOnceRef = useRef(false);
   const rafIdRef = useRef(null);
+
+  // Total en millones (1 decimal), calculado dentro del componente
+  const montoTotalNumber = useMemo(() => {
+    const total = bonificacionesData.reduce(
+      (acc, item) => acc + parseMonto(item.monto),
+      0
+    );
+    return Number(total.toFixed(1)); // 1 decimal fijo
+  }, []);
 
   useEffect(() => {
     if (animatedOnceRef.current) return;
@@ -44,12 +58,12 @@ const Bonificaciones = () => {
       const eased = easeOutCubic(t);
       const value = startValue + (endValue - startValue) * eased;
 
-      setCount(value); // guardamos el valor "vivo" (sin toFixed)
+      setCount(value);
 
       if (t < 1) {
         rafIdRef.current = requestAnimationFrame(tick);
       } else {
-        setCount(endValue); // asegurar valor final exacto
+        setCount(endValue);
         if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       }
     };
@@ -58,7 +72,7 @@ const Bonificaciones = () => {
     return () => {
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
-  }, []);
+  }, [montoTotalNumber]);
 
   return (
     <section id="bonificaciones" className="py-16 bg-black sm:py-20">
@@ -137,6 +151,7 @@ const Bonificaciones = () => {
                 style={{ color: "#dfb95a" }}
               >
                 {count.toFixed(1)} Millones
+                {/* Si querés el signo: `$${count.toFixed(1)} Millones` */}
               </motion.p>
             </motion.div>
           </motion.div>
@@ -144,6 +159,4 @@ const Bonificaciones = () => {
       </div>
     </section>
   );
-};
-
-export default Bonificaciones;
+}
