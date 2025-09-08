@@ -26,12 +26,11 @@ const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
 const Bonificaciones = () => {
   const [count, setCount] = useState(0);
-  const animatedOnceRef = useRef(false); // evita reanimar si el componente re-renderiza
+  const animatedOnceRef = useRef(false);
   const rafIdRef = useRef(null);
 
-  // Animación del contador para el total (sube y queda)
   useEffect(() => {
-    if (animatedOnceRef.current) return; // ya se animó
+    if (animatedOnceRef.current) return;
     animatedOnceRef.current = true;
 
     const duration = 2000; // ms
@@ -45,14 +44,12 @@ const Bonificaciones = () => {
       const eased = easeOutCubic(t);
       const value = startValue + (endValue - startValue) * eased;
 
-      // redondeo a 1 decimal para render
-      setCount(Number(value.toFixed(1)));
+      setCount(value); // guardamos el valor "vivo" (sin toFixed)
 
       if (t < 1) {
         rafIdRef.current = requestAnimationFrame(tick);
       } else {
-        // asegurar que queda exactamente en el final
-        setCount(Number(endValue.toFixed(1)));
+        setCount(endValue); // asegurar valor final exacto
         if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       }
     };
@@ -132,7 +129,6 @@ const Bonificaciones = () => {
               <h3 className="text-xl font-semibold text-gray-300">
                 Bonificaciones Totales
               </h3>
-              {/* ❗️OJO: sin key para no reiniciar animación */}
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

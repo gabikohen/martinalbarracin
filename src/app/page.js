@@ -1,17 +1,26 @@
+"use client";
+import { useState } from "react";
 
-import Bonificaciones from "../components/Bonificaciones";
-import Testimonios from "../components/Testimonios";
-
+import SlotMachine from "@/components/SlotMachine";
 import HeroSection from "@/components/HeroSection";
+import Bonificaciones from "@/components/Bonificaciones";
+import Testimonios from "@/components/Testimonios";
 
-export default function Home() {
+export default function Page() {
+  const [showContent, setShowContent] = useState(false);
+
   return (
-    <main>
-
-    <HeroSection/>
-    
-      <Bonificaciones />
-      <Testimonios />
-    </main>
+    <>
+      {!showContent ? (
+        <SlotMachine onContinue={() => setShowContent(true)} />
+      ) : (
+        <>
+          <HeroSection />
+          <Bonificaciones />
+          <Testimonios />
+      
+        </>
+      )}
+    </>
   );
 }

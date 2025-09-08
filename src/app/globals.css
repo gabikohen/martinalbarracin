@@ -2,21 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === Typing === */
-.typing {
-  font-family: Arial, Helvetica, sans-serif;
-  position: relative;
-}
-.typing::after {
-  position: absolute;
-  right: -10px;
-  color: white;
-  animation: caret 1s infinite;
-}
-@keyframes caret {
-  50% { color: transparent; }
-}
-
 /* === Heartbeat === */
 @keyframes heartbeat {
   0% { transform: scale(1); }
@@ -37,7 +22,6 @@
   perspective: 900px;
   pointer-events: none;
 }
-
 .coin {
   position: absolute;
   width: 0.12em;  /* grosor */
@@ -48,7 +32,6 @@
   animation: fall 10s linear infinite, spin_y 4s linear infinite;
   will-change: transform, top;
 }
-
 /* Tamaños responsive */
 @media (max-width: 640px) {
   .coin { font-size: 20px; }  /* mobile */
@@ -59,7 +42,6 @@
 @media (min-width: 1025px) {
   .coin { font-size: 50px; }  /* desktop */
 }
-
 /* Caras */
 .coin::before, .coin::after {
   content: "";
@@ -72,8 +54,7 @@
 }
 .coin::before { right: -0.44em; transform: rotateY(-90deg); }
 .coin::after { left: -0.44em; transform: rotateY(90deg); }
-
-/* Animaciones */
+/* Animaciones monedas */
 @keyframes fall {
   from { top: -10%; }
   to { top: 110%; }
@@ -81,6 +62,74 @@
 @keyframes spin_y {
   from { transform: rotateY(0deg); }
   to { transform: rotateY(360deg); }
+}
+
+/* === Slot Machine Light BG === */
+.background-light {
+  @apply absolute rounded-full;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.08) 30%, transparent 70%);
+  animation: pulseLight 4s ease-in-out infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+@keyframes pulseLight {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; }
+}
+
+/* === Slot Machine Letters (WHITE GLOW) === */
+@keyframes whiteGlow {
+  0%,100% { text-shadow: 0 0 6px rgba(255,255,255,.7), 0 0 14px rgba(255,255,255,.45); }
+  50%     { text-shadow: 0 0 12px rgba(255,255,255,.95), 0 0 28px rgba(255,255,255,.65); }
+}
+.reel-letter {
+  @apply flex items-center justify-center font-bold text-white;
+  font-size: 2.5rem;
+  height: 120px;
+
+  /* blanco con glow suave por defecto */
+  color: #fff !important;
+  -webkit-text-fill-color: currentColor !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  animation: whiteGlow 2.2s ease-in-out infinite;
+}
+/* Glow más fuerte en hover y al pasar sobre la caja */
+.reel-letter:hover,
+.reel:hover .reel-letter {
+  text-shadow:
+    0 0 10px rgba(255,255,255,.95),
+    0 0 22px rgba(255,255,255,.8),
+    0 0 42px rgba(255,255,255,.6) !important;
+}
+
+/* === Reels (cajas) hover === */
+.reel {
+  transition: box-shadow .3s ease, border-color .3s ease, transform .3s ease;
+}
+.reel:hover {
+  /* hover blanco */
+  border-color: #ffffff !important;
+  box-shadow:
+    0 0 24px rgba(255,255,255,.28),
+    inset 0 0 12px rgba(255,255,255,.12);
+  transform: translateY(-2px);
+}
+
+/* Reels glow/border durante el giro */
+.spinning {
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 30px white;
+  border-color: white;
+}
+.final-glow { animation: finalReelGlow 1s ease-out; }
+@keyframes finalReelGlow {
+  0%   { box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 30px rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.8); }
+  50%  { box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 50px rgba(255,255,255,1);   border-color: rgba(255,255,255,1); }
+  100% { box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.4); border-color: rgba(255,255,255,0.4); }
 }
 
 /* === Reset === */
@@ -92,3 +141,4 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 * { box-sizing: border-box; padding: 0; margin: 0; }
+.nextjs-portal { display: none !important; }
