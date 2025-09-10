@@ -51,10 +51,10 @@ export default function ComunidadSection() {
   const estado = "Operando normal";
 
   const categorias = [
-    { nombre: "MA5", valor: 142, etiqueta: "Cargas realizadas" },
-    { nombre: "MA6", valor: 87, etiqueta: "Cargas realizadas" },
-    { nombre: "MA7", valor: 64, etiqueta: "Cargas realizadas" },
-    { nombre: "MA8", valor: 41, etiqueta: "Cargas realizadas" },
+    { nombre: "MA5", valor: 142 },
+    { nombre: "MA6", valor: 87 },
+    { nombre: "MA7", valor: 64 },
+    { nombre: "MA8", valor: 41 },
   ];
 
   const handleCategorySelect = (categoryName) => {

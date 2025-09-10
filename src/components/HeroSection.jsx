@@ -1,9 +1,6 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import Coins from "./Coins";
 
-// 🎨 Estilo de texto neon blanco + verde
 const NEON_GREEN_GLOW = {
   color: "#ffffff",
   textShadow: `
@@ -25,29 +22,25 @@ export default function HeroSection() {
 
   useEffect(() => {
     let i = 0;
-
     const type = () => {
       if (i <= text.length) {
         setDisplayedText(text.slice(0, i));
         i++;
-
-        // 🔹 Pausa extra después del punto
-        const delay = text[i - 1] === "." ? 800 : 160;
+        const delay = text[i - 1] === "." ? 400 : 80;
         setTimeout(type, delay);
       } else {
         setIsComplete(true);
       }
     };
-
-    type(); // arranca typing
+    type();
   }, [text]);
 
   return (
-    <section className="relative isolate w-full h-[80vh] md:h-screen bg-black overflow-visible group">
-      {/* Fondo de monedas SOLO en mobile y solo en hover */}
-    <div className="pointer-events-none absolute inset-0 w-full h-full z-10">
-  <Coins />
-</div>
+    <section className="relative isolate w-full h-[80vh] md:h-screen bg-black overflow-hidden group">
+      {/* Fondo de monedas que cubre toda la pantalla */}
+      <div className="pointer-events-none absolute inset-0 w-full h-full z-10">
+        <Coins />
+      </div>
 
       {/* Texto central */}
       <div className="absolute inset-0 z-50 flex items-center justify-center px-4 mt-[-40px] sm:mt-[-60px] lg:mt-[-80px]">

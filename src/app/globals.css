@@ -21,6 +21,8 @@
   overflow: hidden;
   perspective: 900px;
   pointer-events: none;
+  width: 100vw; /* Asegurar que use todo el ancho de viewport */
+  height: 100vh; /* Asegurar que use toda la altura de viewport */
 }
 .coin {
   position: absolute;
@@ -133,12 +135,25 @@
 }
 
 /* === Reset === */
-html { scroll-behavior: smooth; }
-html, body { overflow-x: hidden; width: 100%; height: 100vh; }
+html { 
+  scroll-behavior: smooth; 
+  overflow-x: hidden; /* Prevenir scroll horizontal */
+}
+html, body { 
+  overflow-x: hidden; 
+  width: 100%; 
+  height: 100vh; 
+  margin: 0;
+  padding: 0;
+}
 body {
   background: var(--background, #000);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-* { box-sizing: border-box; padding: 0; margin: 0; }
+* { 
+  box-sizing: border-box; 
+  padding: 0; 
+  margin: 0; 
+}
 .nextjs-portal { display: none !important; }
