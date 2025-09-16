@@ -45,22 +45,21 @@ export default function HallOfFameList() {
     });
 
   // 🏆 Datos
-  const ganadoresTop = [
-    { id: 1, alias: "marino23",   categoria: "MA8", fecha: "26-07-2025", monto: 41_867_834 },
-    { id: 2, alias: "Diegoarma",  categoria: "MA7", fecha: "17-04-2024", monto: 36_102_433 },
-    { id: 3, alias: "Topo23",     categoria: "MA6", fecha: "04-10-2023", monto: 32_443_923 },
-    { id: 4, alias: "Marisab",    categoria: "MA5", fecha: "29-09-2022", monto: 29_642_321 },
-    { id: 5, alias: "kevin88", categoria: "MA5", fecha: "07-06-2021", monto: 23_340_009 },
-  ];
+ const ganadoresTop = [
+  { id: 1, alias: "marianorm...",   categoria: "MA8", fecha: "25-07-2025", monto: 850_867_834 },
+  { id: 2, alias: "cachorrops23...", categoria: "MA8", fecha: "15-04-2024", monto: 220_102_433 },
+  { id: 3, alias: "dieogrs2...",     categoria: "MA7", fecha: "04-10-2023", monto: 166_443_923 },
+  { id: 4, alias: "marisab...",      categoria: "MA7", fecha: "04-10-2023", monto: 117_656_243 },
+  { id: 5, alias: "monirs2...",      categoria: "MA7", fecha: "29-09-2022", monto: 76_642_321 },
+  { id: 6, alias: "rlucasg...",      categoria: "MA7", fecha: "07-06-2024", monto: 40_340_009 },
+];
 
-  const puestos6a10 = [
-    { id: 6,  alias: "Solicapa21", categoria: "MA7", fecha: "19-12-2020", monto: 17_430_921 },
-    { id: 7,  alias: "adrimansur", categoria: "MA6", fecha: "18-08-2021", monto: 12_760_489 },
-    { id: 8,  alias: "Chanchos",   categoria: "MA5", fecha: "17-03-2022", monto: 9_320_054 },
-    { id: 9,  alias: "Danyliv",    categoria: "MA8", fecha: "16-05-2023", monto: 5_229_873 },
-    { id: 10, alias: "Josemendes", categoria: "MA6", fecha: "15-01-2024", monto: 5_488_532 },
-  ];
-
+const puestos6a10 = [
+  { id: 7,  alias: "adrimansurms1...", categoria: "MA6", fecha: "18-08-2021", monto: 25_483_219 },
+  { id: 8,  alias: "roberst9...",      categoria: "MA6", fecha: "17-03-2022", monto: 9_127_504 },
+  { id: 9,  alias: "danigrid...",      categoria: "MA6", fecha: "16-05-2023", monto: 5_394_872 },
+  { id: 10, alias: "Josemendesr...",   categoria: "MA6", fecha: "15-01-2024", monto: 4_056_783 },
+];
   // 🏷️ Pill de categoría (glow verde)
   const CategoriaPill = ({ text }) => (
     <span

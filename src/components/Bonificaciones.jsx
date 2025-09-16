@@ -5,14 +5,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 // Datos ordenados de enero a agosto (dejé tus textos tal cual)
 const bonificacionesData = [
-  { mes: "Enero",   monto: "$12.5 Millones" },
-  { mes: "Febrero", monto: "$15.7 Millones" },
-  { mes: "Marzo",   monto: "$18.0 Millones" },
-  { mes: "Abril",   monto: "$21.3 Millones" },
-  { mes: "Mayo",    monto: "$23.3 Millones" },
-  { mes: "Junio",   monto: "$25.9 Millones" },
-  { mes: "Julio",   monto: "$29.1 Millones" },
-  { mes: "Agosto",  monto: "$36.5 Millones" },
+  { mes: "Enero",   monto: "$26.5 Millones" },
+  { mes: "Febrero", monto: "$30.1 Millones" },
+  { mes: "Marzo",   monto: "$38.0 Millones" },
+  { mes: "Abril",   monto: "$31.3 Millones" },
+  { mes: "Mayo",    monto: "$27.3 Millones" },
+  { mes: "Junio",   monto: "$38.2 Millones" },
+  { mes: "Julio",   monto: "$37.0 Millones" },
+  { mes: "Agosto",  monto: "$41.0 Millones" },
 ];
 
 // Parser robusto: acepta $ , espacios, "Millones/Millón", coma o punto
