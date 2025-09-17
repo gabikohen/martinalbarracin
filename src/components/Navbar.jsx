@@ -164,7 +164,7 @@ export default function Navbar() {
           <li className="mt-2 w-full">
             {/* Botón a WhatsApp (mobile/tablet) */}
             <a
-              href="https://wa.me/5491123456789"
+              href="https://wa.me/5491168324349"
               target="_blank"
               rel="noopener noreferrer"
               onClick={closeMenu}
