@@ -45,12 +45,12 @@ export default function Navbar() {
       document.documentElement.style.scrollBehavior = "";
     };
   }, [isOpen]);
-
+    
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Quienes Somos", href: "/quienessomos" },
     { label: "Comunidad", href: "/comunidad" },
-     {/*{ label: "Afiliados", href: "/afiliados" },*/}
+ 
   ];
 
   const toggleMenu = () => setOpen((v) => !v);
