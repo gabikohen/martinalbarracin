@@ -110,7 +110,7 @@ export default function Footer() {
 
       {/* Botón de WhatsApp flotante (responsive) */}
       <a
-        href="https://wa.me/5491168324349"
+        href="https://wa.me/5491170817233"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chatear por WhatsApp"

@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Marteam",
-  description: "Plataforma de fichas y entretenimiento digital",
+  description:  "Entretenimiento digital",
 };
 
 export default function RootLayout({ children }) {
