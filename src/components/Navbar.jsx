@@ -122,7 +122,7 @@ export default function Navbar() {
           <li>
             {/* Botón a WhatsApp (desktop) */}
             <a
-              href="https://wa.me/5491123456789"
+              href="https://wa.me/5491170817233"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block"
@@ -165,7 +165,7 @@ export default function Navbar() {
           <li className="mt-2 w-full">
             {/* Botón a WhatsApp (mobile/tablet) */}
             <a
-              href="https://wa.me/5491168324349"
+              href="https://wa.me/5491170817233"
               target="_blank"
               rel="noopener noreferrer"
               onClick={closeMenu}

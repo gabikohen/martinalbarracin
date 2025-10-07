@@ -89,7 +89,7 @@ export default function FAQSection() {
             </p>
             <button className="relative bg-transparent text-white py-4 px-8 rounded-lg border-2 border-[#dfb95a] transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 before:content-[''] before:absolute before:inset-0 before:rounded-lg before:shadow-[0_0_15px_#6b21a8,0_0_25px_#1e3a8a,0_0_35px_#312e81] before:opacity-0 hover:before:opacity-100 before:transition-all before:duration-300 before:z-[-1] hover:text-[#FFF7D1] hover:shadow-[0_0_15px_rgba(255,247,209,0.8),0_0_25px_rgba(255,247,209,0.6)] hover:border-[#dfb95a]">
               <a
-  href="https://wa.me/5491123456789"
+  href="https://wa.me/5491170817233"
   target="_blank"
   rel="noopener noreferrer"
  
