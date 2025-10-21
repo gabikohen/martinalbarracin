@@ -35,6 +35,13 @@ export default function HeroSection() {
     type();
   }, [text]);
 
+  const handleScroll = () => {
+    const footer = document.getElementById("footer");
+    if (footer) {
+      footer.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative isolate w-full h-[80vh] md:h-screen bg-black overflow-hidden group">
       {/* Fondo de monedas que cubre toda la pantalla */}
@@ -52,6 +59,29 @@ export default function HeroSection() {
         >
           {displayedText}
         </h1>
+      </div>
+
+      {/* Scroll Down Indicator */}
+      <div
+        className="absolute bottom-40 left-1/2 -translate-x-1/2 z-50 cursor-pointer"
+        onClick={handleScroll}
+      >
+        <div className="animate-bounce">
+          <svg
+            className="w-8 h-8"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="#00ff80"
+            style={{
+              filter: "drop-shadow(0 0 6px rgba(0, 255, 128, 0.8))",
+            }}
+          >
+            <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+          </svg>
+        </div>
       </div>
     </section>
   );
