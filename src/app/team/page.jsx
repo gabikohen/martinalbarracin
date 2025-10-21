@@ -27,12 +27,12 @@ const GOLD_TITLE = {
 
 /** 👥 Miembros del equipo (usa imágenes desde /public) */
 const teamMembers = [
-  { name: "Martin Albarracin", role: "Fundador" },
+  { name: "Martin Albarracin", role: "Fundador",image:"/Martin.jpg" },
   { name: "Miguel Dross", role: "Operación e Innovación", image: "/miguel.jpg" },
   { name: "Paulina Stevenson", role: "Gerente de Ventas", image: "/paulina.jpg" },
   { name: "Sabrina Madero", role: "Cajera", bio: "Lunes a Viernes de 6am a 2pm", image: "/Sabrina.jpg" }, // mayúscula
   { name: "Ringo Martinez", role: "Cajero", bio: "Lunes a Viernes de 2pm a 9pm", image: "/ringo.jpg" },
-  { name: "Tino Jhonson", role: "Cajero", bio: "Lunes a Viernes de 9pm a 6am" },
+  { name: "Tino Jhonson", role: "Cajero", bio: "Lunes a Viernes de 9pm a 6am",image: "/tino.jpg" },
   { name: "Alison Moreno", role: "Cajero", bio: "Sábados y Domingos de 6am a 6pm. Feriados de 6am a 6pm", image: "/alison.jpg" },
   { name: "Vito Gianolli", role: "Cajero", bio: "Sábados y Domingos de 6pm a 6am. Feriados de 6pm a 6am", image: "/vito.jpg" },
 ];
