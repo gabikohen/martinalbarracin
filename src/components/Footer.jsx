@@ -1,12 +1,14 @@
 'use client';
 import React from "react";
 import { FaFacebookF, FaInstagram, FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
-
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white pt-20 pb-10 px-6 sm:px-12 lg:px-32 transition-all duration-500">
+    <footer
+      id="footer"
+      className="bg-black text-white pt-20 pb-10 px-6 sm:px-12 lg:px-32 transition-all duration-500"
+    >
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-16 pb-10 text-center">
         {/* Logo y descripción */}
         <div className="lg:col-span-2">
@@ -17,13 +19,28 @@ export default function Footer() {
             Confianza. Rapidez, seguridad y atención 24/7.
           </p>
           <div className="flex justify-center gap-6 mt-5">
-            <a href="https://www.facebook.com/profile.php?id=61578820077854" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.facebook.com/profile.php?id=61578820077854"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
               <FaFacebookF className="text-2xl hover:text-blue-500 transition drop-shadow-[0_0_5px_#3b82f6]" />
             </a>
-            <a href="https://www.instagram.com/marteamok/" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.instagram.com/marteamok/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
               <FaInstagram className="text-2xl hover:text-pink-500 transition drop-shadow-[0_0_5px_#ec4899]" />
             </a>
-            <a href="https://t.me/" target="_blank" rel="noopener noreferrer" aria-label="Canal de Telegram">
+            <a
+              href="https://t.me/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Canal de Telegram"
+            >
               <FaTelegramPlane className="text-2xl hover:text-blue-500 transition drop-shadow-[0_0_5px_#38bdf8]" />
             </a>
           </div>
@@ -69,9 +86,9 @@ export default function Footer() {
             Compañía
           </h3>
           <ul className="space-y-3 text-base text-white/90">
-          {/* <li className="hover:text-[#dfb95a] transition">
+            {/* <li className="hover:text-[#dfb95a] transition">
               <Link href="/afiliate">Afíliate</Link>
-            </li>*/}
+            </li> */}
             <li className="hover:text-[#dfb95a] transition">
               <Link href="/terminos">Términos y Condiciones</Link>
             </li>
