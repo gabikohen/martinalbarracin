@@ -90,14 +90,7 @@ export default function QuienesSomos() {
             ))}
           </div>
 
-          <motion.span
-            className="mt-12 block text-2xl sm:text-3xl font-bold text-center"
-            style={GREEN_FOOTER_GLOW}
-            animate={{ opacity: [1, 0.6, 1, 0.8, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            ¡Sumate a <span className="uppercase">MarTeam</span> y llevá tu diversión al siguiente nivel!
-          </motion.span>
+          
         </div>
       </section>
 
