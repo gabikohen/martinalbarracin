@@ -33,7 +33,7 @@ const GOLD_TITLE_SOFT = {
 /** 👥 Miembros del equipo (usa imágenes desde /public) */
 const teamMembers = [
   { name: "Martin Albarracin", role: " CEO & Fundador", image: "/Martin.jpg" },
-  { name: "Miguel Dross", role: "Operación e Innovación", image: "/miguel.jpg" },
+  { name: "Miguel Dross", role: "Operaciones e Innovación", image: "/miguel.jpg" },
   { name: "Paulina Stevenson", role: "Gerente de Ventas", image: "/paulina.jpg" },
   { name: "Sabrina Madero", role: "Secretaria", bio: "Lunes a Viernes de 6am a 2pm", image: "/Sabrina.jpg" },
   { name: "Ringo Martinez", role: "Secretario", bio: "Lunes a Viernes de 2pm a 9pm", image: "/ringo.jpg" },
