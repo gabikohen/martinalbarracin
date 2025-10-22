@@ -5,13 +5,12 @@ import Coins from "./Coins";
 const NEON_GREEN_GLOW = {
   color: "#ffffff",
   textShadow: `
-    0 0 5px rgba(0, 255, 128, 0.8),
-    0 0 10px rgba(0, 255, 128, 0.6),
-    0 0 20px rgba(0, 255, 128, 0.4),
-    0 0 40px rgba(0, 255, 128, 0.2)
+    0 0 3px rgba(0, 255, 128, 0.45),
+    0 0 6px rgba(0, 255, 128, 0.30),
+    0 0 12px rgba(0, 255, 128, 0.18)
   `,
-  filter: "drop-shadow(0 0 6px rgba(0, 255, 128, 0.8))",
-  letterSpacing: "0.5px",
+  filter: "drop-shadow(0 0 3px rgba(0, 255, 128, 0.45))",
+  letterSpacing: "0.3px",
 };
 
 export default function HeroSection() {

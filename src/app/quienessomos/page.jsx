@@ -13,18 +13,35 @@ const beneficios = [
   "Transparencia asegurada",
 ];
 
-const GREEN_FOOTER_GLOW = {
+/** 🌿 Glow verde suave */
+const GREEN_FOOTER_GLOW_SOFT = {
   background: "linear-gradient(45deg, #338c3b, #66ff66, #338c3b)",
   backgroundClip: "text",
   WebkitBackgroundClip: "text",
   WebkitTextFillColor: "transparent",
-  textShadow: "0 0 10px rgba(51,140,59,0.6), 0 0 15px rgba(51,140,59,0.4)",
-  filter: "drop-shadow(0 0 6px rgba(51,140,59,0.6))",
-  letterSpacing: "0.5px",
+  textShadow: `
+    0 0 3px rgba(51,140,59,0.45),
+    0 0 6px rgba(51,140,59,0.30),
+    0 0 12px rgba(51,140,59,0.18)
+  `,
+  filter: "drop-shadow(0 0 3px rgba(51,140,59,0.45))",
+  letterSpacing: "0.3px",
+};
+
+/** 🟨 Glow dorado suave */
+const GOLD_TITLE_SOFT = {
+  background: "linear-gradient(45deg, #dfb95a, #fff1a6, #dfb95a)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  textShadow: "0 0 3px rgba(223,185,90,0.35), 0 0 6px rgba(223,185,90,0.22)",
+  filter: "drop-shadow(0 0 3px rgba(223,185,90,0.35))",
+  letterSpacing: "0.3px",
+  paddingLeft: "4px",
 };
 
 const NeonText = ({ children, className = "font-bold" }) => (
-  <span className={className} style={GREEN_FOOTER_GLOW}>
+  <span className={className} style={GREEN_FOOTER_GLOW_SOFT}>
     {children}
   </span>
 );
@@ -47,54 +64,39 @@ export default function QuienesSomos() {
         </style>
 
         <div className="max-w-5xl mx-auto">
-          <h2
-            className="text-4xl sm:text-5xl font-extrabold mb-8"
-            style={{
-              background: "linear-gradient(45deg, #bfb281, #fff3b0, #bfb281)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              textShadow:
-                "0 0 10px rgba(191,178,129,0.6), 0 0 15px rgba(191,178,129,0.4)",
-              filter: "drop-shadow(0 0 6px rgba(191,178,129,0.6))",
-              letterSpacing: "0.5px",
-              paddingLeft: "4px",
-            }}
-          >
+          <h2 className="text-4xl sm:text-5xl font-extrabold mb-8" style={GOLD_TITLE_SOFT}>
             Quiénes Somos
           </h2>
 
           <p className="text-lg sm:text-xl mb-12 leading-relaxed text-gray-100 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             En <NeonText>MarTeam</NeonText> te prometemos el mejor servicio de{" "}
             <NeonText className="font-semibold">entretenimiento online</NeonText>{" "}
-            del mercado. Además, estamos obsesionados con la mejora continua para
-            poder brindarte una <NeonText className="font-semibold">experiencia premium</NeonText>, como vos te mereces. Al ser servicio, tu{" "}
-            <NeonText className="font-semibold">opinión</NeonText> es lo que más nos importa y eso nos diferencia del resto, no dudes en compartirnos tus sensaciones.
+            del mercado. Además, estamos obsesionados con la mejora continua para poder brindarte una{" "}
+            <NeonText className="font-semibold">experiencia premium</NeonText>, como vos te mereces.
+            Al ser servicio, tu <NeonText className="font-semibold">opinión</NeonText> es lo que más nos importa y eso nos diferencia del resto: no dudes en compartirnos tus sensaciones.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {beneficios.map((item, index) => (
               <motion.div
                 key={index}
-                className="p-6 rounded-xl bg-transparent backdrop-blur-md border border-white/30 shadow-2xl"
+                className="p-6 rounded-xl bg-transparent backdrop-blur-md border border-white/20 shadow-xl"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
-                whileHover={{ y: -8, scale: 1.05, boxShadow: "0px 15px 25px rgba(0,0,0,0.3)" }}
+                transition={{ delay: index * 0.15, duration: 0.45 }}
+                whileHover={{ y: -6, scale: 1.04, boxShadow: "0px 16px 26px rgba(0,0,0,0.28)" }}
                 viewport={{ once: true }}
               >
                 <p className="text-lg font-bold">
-                  <span style={GREEN_FOOTER_GLOW}>{item}</span>
+                  <span style={GREEN_FOOTER_GLOW_SOFT}>{item}</span>
                 </p>
               </motion.div>
             ))}
           </div>
-
-          
         </div>
       </section>
 
-      {/* Debajo, el otro componente */}
+      {/* Debajo, el equipo */}
       <NuestroEquipo />
     </>
   );
