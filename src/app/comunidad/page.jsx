@@ -194,7 +194,7 @@ export default function ComunidadSection() {
           Hall of Fame
         </GoldenTitle>
         <div className="flex justify-center mb-10">
-         <span style={GREEN_FOOTER_GLOW_SOFT}>< HallOfFameList /></span> 
+         < HallOfFameList />
         </div>
       </div>
     </section>
