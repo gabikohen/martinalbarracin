@@ -13,7 +13,7 @@ const testimonials = [
   { id: 5, name: "Lautaro Acosta", text: "Para mí la rapidez es clave. Acá cargo en minutos y puedo aprovechar las mesas. Encima tiran bonificaciones seguido." },
   { id: 6, name: "Camila Funes", text: "Confío porque priorizan la seguridad: validaciones, recibos y todo prolijo. Se nota que cuidan al jugador." },
   { id: 7, name: "Federico Domínguez", text: "No solo venden, también asesoran. Me ayudaron a ordenar límites y no sobreapostar. Trato de primera." },
-  { id: 8, name: "Milagros Sosa", text: "Me copa el programa de fidelidad y los rankings semanales. Además, la atención es rápida y con buena onda." },
+  { id: 8, name: "Milagros Sosa", text: "La atención es rápida y con buena onda." },
   { id: 9, name: "Bruno Rinaldi", text: "Con otros siempre había demoras. Con ustedes, retiros en tiempo y forma incluso feriados. Cero estrés." },
 ];
 

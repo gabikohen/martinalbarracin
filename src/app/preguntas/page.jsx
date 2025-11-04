@@ -19,7 +19,7 @@ export default function FAQSection() {
     { question: "¿Cuál es la carga mínima y retiro mínimo?", answer: "Carga $10.000, retiro $30.000" },
     { question: "¿Qué tipos de juegos ofrecen?", 
   answer: "Ruleta, slots, blackjack, casino en vivo, apuestas deportivas y mucho más."},
-    { question: "¿Cuál es el bono de bienvenida?", answer: "Te bonificamos el 20% con tu primera carga" },
+    { question: "¿Cuál es el bono de bienvenida?", answer: "Te bonificamos el 50% con tu primera carga" },
     { question: "¿Desde dónde pueden jugar?", answer: "Podés jugar desde celular, computadora, tablet o cualquier dispositivo electrónico con acceso a Internet" },
     { question: "¿La plataforma cuenta con soporte las 24hs?", 
   answer: "Sí, contamos con soporte disponible las 24 horas, los 365 días del año."  },
